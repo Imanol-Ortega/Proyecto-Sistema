@@ -1,27 +1,27 @@
 import { useEffect, useState } from 'react'
 import './App.css'
-import { getPruebaRequest } from './api/prueba.api'
+import { getPersonaRequest } from './api/personas.api'
 function App() {
   const [post,setPost] = useState([])
 
   useEffect(()=>{
 
-    async function getPrueba(){
+    async function getPersonas(){
       try {
-          const res = await getPruebaRequest();
+          const res = await getPersonaRequest();
           console.log(res.data.rows)
           setPost(res.data.rows)
       } catch (error) {
           console.log(error)
       }
     }
-    getPrueba();
+    getPersonas();
   },[])
   return (
     <div>{
-          post.map(po =>
-            <div key = {po.pruebaID}>
-              <h1>{po.descripcion}</h1>
+          post.map(qsql =>
+            <div key = {qsql.personasid}>
+              <h1>{qsql.nombres}</h1>
             </div>
           )
         }
