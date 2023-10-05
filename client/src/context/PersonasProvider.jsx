@@ -18,12 +18,26 @@ export const PersonasContextProvider = ({children})=>{
     const [persona,setPersona] = useState([]);
     const loadPersonas  = async()=>{
         const response = await getPersonasRequest();
-        console.log(response.data.rows);
-        setPersona(response.data.rows);
+        setPersona(response.data);
     }
-
+    const deletePersonas = async(id)=>{
+        try {
+            const response = await deletePersonasRequest(id);
+            setPersona(persona.filter(persona => persona.personasid !== id))
+        } catch (error) {
+            console.error(error)
+        }
+    }
+    const getPersona = async(id,values)=>{
+        try {
+            const response = await getPersonaRequest(id,values);
+            return response.data.rows
+        } catch (error) {
+            console.error(error)
+        }
+    }
     return (
-        <PersonasContext.Provider value={{persona,loadPersonas,getPersonaRequest,postPersonaRequest,updPersonasRequest,deletePersonasRequest}}>
+        <PersonasContext.Provider value={{persona,loadPersonas,getPersona,postPersonaRequest,updPersonasRequest,deletePersonas}}>
             {children}
         </PersonasContext.Provider>
     );

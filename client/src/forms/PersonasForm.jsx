@@ -1,48 +1,68 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 
 import {Form,Formik} from 'formik'
 import { usePersonas } from '../context/PersonasProvider'
 import { useParams } from 'react-router-dom'
-import { useState } from 'react'
+import { useEffect,useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 function PersonasForm() {
     
-    const {postPersonaRequest,updPersonasRequest} = usePersonas();
+    const {postPersonaRequest,updPersonasRequest,getPersona} = usePersonas();
     const [personas,setPersonas] = useState({
-        "nombres": "",
-        "apellidos":"",
-        "telefono":"",
-        "direccion":"",
-        "nrodocumento":0,
-        "email":"",
-        "tipodocumentoid":0,
-        "tipopersonaid":0,
-
+        personasid:0,
+        nombres: '',
+        apellidos:'',
+        telefono:'',
+        direccion:'',
+        nrodocumento:0,
+        email:'',
+        tipodocumentoid:0,
+        tipopersonaid:0,
     });
     const params = useParams();
+    const navigate = useNavigate()
+    const cargarPersonas = async()=>{
+        try {
+            if(params.id){
+                const res = await getPersona(params.id);
+                console.log(res[0])
+                setPersonas({
+                    personasid:res[0].personasid,
+                    nombres: res[0].nombres,
+                    apellidos:res[0].apellidos,
+                    telefono:res[0].telefono,
+                    direccion:res[0].direccion,
+                    nrodocumento:res[0].nrodocumento,
+                    email:res[0].email,
+                    tipodocumentoid:res[0].tipodocumentoid,
+                    tipopersonaid:res[0].tipopersonaid,
+                });
+            }
+        } catch (error) {
+            console.error(error)
+        }
+        
+    }
+    useEffect(()=>{
+        
+        cargarPersonas();
+    },[params.id]) 
 
-    
     return (
         <div>
             <Formik
                     initialValues={personas}
                     enableReinitialize = {true}
-                    onSubmit={async(values)=>{
+                    onSubmit={async(values,actions)=>{
                         if (params.id){
                             await updPersonasRequest(params.id,values);
                         }else{
                             await postPersonaRequest(values);
-                            window.location.replace('/')
                         }
-                        setPersonas({
-                            "nombres": "",
-                            "apellidos":"",
-                            "telefono":"",
-                            "direccion":"",
-                            "nrodocumento":0,
-                            "email":"",
-                            "tipodocumentoid":0,
-                            "tipopersonaid":0,
-                        })
+                        setPersonas('')
+                        actions.resetForm();
+                        navigate('/')
                     }}
                 >
                 {({handleChange,handleSubmit,values,isSubmitting})=>(
@@ -60,7 +80,7 @@ function PersonasForm() {
                                 name='nombres' 
                                 placeholder='Ingrese sus nombres' 
                                 onChange={handleChange} 
-                                values={values.nombres}/>
+                                value={values.nombres || ''}/>
                                 
                                 <label className='block text-gray-700 text-sm font-bold mb-2'>Apellidos</label>
                                 <input 
@@ -69,7 +89,7 @@ function PersonasForm() {
                                 name='apellidos' 
                                 placeholder='Ingrese sus apellidos' 
                                 onChange={handleChange} 
-                                values={values.apellidos}/>
+                                value={values.apellidos || ''}/>
 
                                 <label className='block text-gray-700 text-sm font-bold mb-2'>Telefono</label>
                                 <input 
@@ -78,7 +98,7 @@ function PersonasForm() {
                                 name='telefono' 
                                 placeholder='Ingrese su telefono' 
                                 onChange={handleChange} 
-                                values={values.telefono}/>
+                                value={values.telefono || ''}/>
 
                                 <label className='block text-gray-700 text-sm font-bold mb-2'>Direccion</label>
                                 <input 
@@ -87,7 +107,7 @@ function PersonasForm() {
                                 name='direccion' 
                                 placeholder='Ingrese su direccion' 
                                 onChange={handleChange} 
-                                values={values.direccion}/>
+                                value={values.direccion || ''}/>
 
                                 <label className='block text-gray-700 text-sm font-bold mb-2'>Nro Documento</label>
                                 <input 
@@ -96,7 +116,7 @@ function PersonasForm() {
                                 name='nrodocumento' 
                                 placeholder='Ingrese su Nro de documento' 
                                 onChange={handleChange} 
-                                values={values.nrodocumento}/>
+                                value={values.nrodocumento || 0}/>
 
                                 <label className='block text-gray-700 text-sm font-bold mb-2'>Email</label>
                                 <input 
@@ -105,7 +125,7 @@ function PersonasForm() {
                                 name='email' 
                                 placeholder='Ingrese su Email' 
                                 onChange={handleChange} 
-                                values={values.email}/>
+                                value={values.email || ''}/>
 
                                 <label className='block text-gray-700 text-sm font-bold mb-2'>Tipo documento</label>
                                 <input 
@@ -114,7 +134,7 @@ function PersonasForm() {
                                 name='tipodocumentoid' 
                                 placeholder='Ingrese su tipo de documento' 
                                 onChange={handleChange} 
-                                values={values.tipodocumentoid}/>
+                                value={values.tipodocumentoid || 0}/>
 
                                 <label className='block text-gray-700 text-sm font-bold mb-2'>Tipo persona</label>
                                 <input 
@@ -123,7 +143,7 @@ function PersonasForm() {
                                 name='tipopersonaid' 
                                 placeholder='Ingrese su tipo de persona' 
                                 onChange={handleChange} 
-                                values={values.tipopersonaid}/>
+                                value={values.tipopersonaid || 0}/>
 
                                 
                                 <button 
@@ -141,23 +161,3 @@ function PersonasForm() {
 
 export default PersonasForm
 
-
-/*useEffect(()=>{
-        const loadPersona = async()=>{
-            if(params.id){
-                const response = await getPersonaRequest(params.id);
-                console.log(response.nombres)
-                setPersonas({
-                    "nombres":response.nombres,
-                    "apellidos":response.apellidos,
-                    "telefono":response.telefono,
-                    "direccion":response.direccion,
-                    "nrodocumento":response.nrodocumento,
-                    "email":response.email,
-                    "tipodocumentoid":response.tipodocumentoid,
-                    "tipopersonaid":response.tipodocumentoid,
-                });
-            }
-        }
-        loadPersona();
-    },[getPersonaRequest,params.id]) */

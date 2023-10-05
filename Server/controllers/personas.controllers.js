@@ -4,7 +4,6 @@ import { pool } from "../db.js";
 export const getPersonas = async(req,res)=>{
     try {
         const result = await pool.query('SELECT * FROM personas');
-        console.log(result);   
         res.json(result.rows);
     } catch (error) {
         return res.status(500).json({message:error.message});
@@ -18,6 +17,7 @@ export const getPersona = async(req,res)=>{
         if (result.length == 0){
             return res.status(404).json({message: "persona no encontrada"})
         }
+        console.log("este resultado",result)
         res.json(result);
     } catch (error) {
         return res.status(500).json({message:error.message});
@@ -27,7 +27,6 @@ export const getPersona = async(req,res)=>{
 //funcion para insertar en la tabla personas
 export const postPersonas = async(req,res)=>{
     try {
-        console.log(req.body)
         const resp= req.body;
         const result = await pool.query('INSERT INTO personas (nombres,apellidos,telefono,direccion,nrodocumento,email,tipodocumentoid,tipopersonaid) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)',
                                         [resp.nombres,resp.apellidos,resp.telefono,resp.direccion,resp.nrodocumento,resp.email,resp.tipodocumentoid,resp.tipopersonaid])
@@ -58,3 +57,5 @@ export const dltPersonas = async(req,res)=>{
         return res.status(500).json({message:error.message})
     }
 };
+
+//funcion para devolver el tipo de persona

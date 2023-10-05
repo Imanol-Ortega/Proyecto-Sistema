@@ -7,13 +7,14 @@ import PersonasForm from './forms/PersonasForm'
 function App() {
 
   return (
-    <div className='bg-zinc-900 h-screen text-blue-50'>
+    <div className='bg-zinc-800 text-blue-50 h-screen'>
       <Navbar/>
       <div className="container mx-auto py-4 px-10" >
         <PersonasContextProvider>
           <Routes>
             <Route path='/' element={<PersonasView/>}></Route>
             <Route path='/new' element={<PersonasForm/>}></Route>
+            <Route path='/edit/:id' element={<PersonasForm/>}></Route>
           </Routes>
         </PersonasContextProvider>
       </div>
