@@ -13,7 +13,7 @@ function App() {
         <PersonasContextProvider>
           <Routes>
             <Route path='/' element={<PersonasView/>}></Route>
-            <Route path='/personas/new' element={<PersonasForm/>}></Route>
+            <Route path='/new' element={<PersonasForm/>}></Route>
           </Routes>
         </PersonasContextProvider>
       </div>

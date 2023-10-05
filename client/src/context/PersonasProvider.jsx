@@ -18,11 +18,17 @@ export const PersonasContextProvider = ({children})=>{
     const [persona,setPersona] = useState([]);
     const loadPersonas  = async()=>{
         const response = await getPersonasRequest();
-        console.log(response.data);
-        setPersona(response.data);
+        console.log(response.data.rows);
+        setPersona(response.data.rows);
     }
 
-    const createPersona = async(values)=>{
+    return (
+        <PersonasContext.Provider value={{persona,loadPersonas,getPersonaRequest,postPersonaRequest,updPersonasRequest,deletePersonasRequest}}>
+            {children}
+        </PersonasContext.Provider>
+    );
+}
+/*const createPersona = async(values)=>{
         try {
             const response = await postPersonaRequest();
             console.log(response);
@@ -33,7 +39,7 @@ export const PersonasContextProvider = ({children})=>{
     const getPersona = async(id)=>{
         try {
             const response = await getPersonaRequest(id);
-            console.log(response);
+            return response.data.rows;
         } catch (error) {
             console.error(error);
         }
@@ -53,11 +59,4 @@ export const PersonasContextProvider = ({children})=>{
         } catch (error) {
             console.error(error);
         }
-    }
-
-    return (
-        <PersonasContext.Provider value={{persona,loadPersonas,createPersona,getPersona,updatePersona,deletePersona}}>
-            {children}
-        </PersonasContext.Provider>
-    );
-}
+    }*/

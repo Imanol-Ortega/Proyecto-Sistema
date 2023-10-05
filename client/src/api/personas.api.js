@@ -5,9 +5,10 @@ export const getPersonasRequest = async()=>{
 };
 
 export const getPersonaRequest = async(id)=>{
-    return await axios.get(`http://localhost:4000/personas/${id}`);
-};
-
+    const result = await axios.get(`http://localhost:4000/personas/${id}`);
+    console.log(result.data.rows)
+    return result;
+}
 export const postPersonaRequest = async(value)=>{
     return await axios.post('http://localhost:4000/personas',value);
 };

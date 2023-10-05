@@ -5,7 +5,7 @@ export const getPersonas = async(req,res)=>{
     try {
         const result = await pool.query('SELECT * FROM personas');
         console.log(result);   
-        res.json(result);
+        res.json(result.rows);
     } catch (error) {
         return res.status(500).json({message:error.message});
     }
@@ -27,9 +27,10 @@ export const getPersona = async(req,res)=>{
 //funcion para insertar en la tabla personas
 export const postPersonas = async(req,res)=>{
     try {
-        const {nombres,apellidos,telefono,direccion,nrodocumento,email,td,tp} = req.body;
+        console.log(req.body)
+        const resp= req.body;
         const result = await pool.query('INSERT INTO personas (nombres,apellidos,telefono,direccion,nrodocumento,email,tipodocumentoid,tipopersonaid) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)',
-                                        [nombres,apellidos,telefono,direccion,nrodocumento,email,td,tp])
+                                        [resp.nombres,resp.apellidos,resp.telefono,resp.direccion,resp.nrodocumento,resp.email,resp.tipodocumentoid,resp.tipopersonaid])
         res.json(result);
     } catch (error) {
         return res.status(500).json({message:error.message})
