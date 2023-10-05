@@ -9,7 +9,7 @@ function App() {
     async function getPersonas(){
       try {
           const res = await getPersonaRequest();
-          console.log(res.data.rows)
+          //console.log(res.data.rows)
           setPost(res.data.rows)
       } catch (error) {
           console.log(error)
