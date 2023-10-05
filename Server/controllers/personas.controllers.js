@@ -1,17 +1,15 @@
 import { pool } from "../db.js";
 
-
 //funcion para obtener todos los datos de personas
 export const getPersonas = async(req,res)=>{
     try {
-        const result = await pool.query('SELECT * FROM personas ');
-        console.log(result);
+        const result = await pool.query('SELECT * FROM personas');
+        console.log(result);   
         res.json(result);
     } catch (error) {
         return res.status(500).json({message:error.message});
     }
 };
-
 
 //funcion para obtener un dato de la tabla personas en especifico
 export const getPersona = async(req,res)=>{
@@ -26,7 +24,6 @@ export const getPersona = async(req,res)=>{
     }
 };
 
-
 //funcion para insertar en la tabla personas
 export const postPersonas = async(req,res)=>{
     try {
@@ -39,7 +36,6 @@ export const postPersonas = async(req,res)=>{
     }
 };
 
-
 // funcion para actualizar la tabla personas
 export const updPersonas = async(req,res)=>{
     try {
@@ -51,7 +47,6 @@ export const updPersonas = async(req,res)=>{
         return res.status(500).json({message:error.message})
     }
 };
-
 
 // funcion para eliminar de la tabla personas
 export const dltPersonas = async(req,res)=>{
