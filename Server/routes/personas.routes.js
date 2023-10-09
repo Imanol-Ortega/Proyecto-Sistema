@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { getPersona,getPersonas,postPersonas,updPersonas,dltPersonas} from "../controllers/personas.controllers.js";
+
 const router = Router();
 
 router.get('/personas',getPersonas);
