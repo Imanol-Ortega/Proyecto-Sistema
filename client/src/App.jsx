@@ -1,30 +1,23 @@
-import { useEffect, useState } from 'react'
-import './App.css'
-import { getPruebaRequest } from './api/prueba.api'
+import {Routes,Route} from 'react-router-dom'
+import Navbar from './componentes/Navbar'
+import { PersonasContextProvider } from './context/PersonasProvider'
+import PersonasView from './views/PersonasView'
+import PersonasForm from './forms/PersonasForm'
+
 function App() {
-  const [post,setPost] = useState([])
 
-  useEffect(()=>{
-
-    async function getPrueba(){
-      try {
-          const res = await getPruebaRequest();
-          console.log(res.data.rows)
-          setPost(res.data.rows)
-      } catch (error) {
-          console.log(error)
-      }
-    }
-    getPrueba();
-  },[])
   return (
-    <div>{
-          post.map(po =>
-            <div key = {po.pruebaID}>
-              <h1>{po.descripcion}</h1>
-            </div>
-          )
-        }
+    <div className='bg-zinc-800 text-blue-50 h-screen'>
+      <Navbar/>
+      <div className="container mx-auto py-4 px-10" >
+        <PersonasContextProvider>
+          <Routes>
+            <Route path='/' element={<PersonasView/>}></Route>
+            <Route path='/new' element={<PersonasForm/>}></Route>
+            <Route path='/edit/:id' element={<PersonasForm/>}></Route>
+          </Routes>
+        </PersonasContextProvider>
+      </div>
     </div>
   )
 }
