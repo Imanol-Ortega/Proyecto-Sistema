@@ -3,7 +3,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import { useContext, useState } from "react";
 
-import { PersonasContext } from "./PersonasContext";
+import { PersonasContext } from "./Contexto";
 import {getPersonasRequest,getPersonaRequest,postPersonaRequest,updPersonasRequest,deletePersonasRequest} from '../api/personas.api'
 
 export const usePersonas = ()=>{
