@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect } from "react"
 import PersonasCards from "../componentes/PersonasCards";
-import { usePersonas } from "../context/PersonasProvider"
+import { usePersonas } from "../context/ContextoProvider"
 
 function PersonasView() {
   const {persona,loadPersonas} = usePersonas();

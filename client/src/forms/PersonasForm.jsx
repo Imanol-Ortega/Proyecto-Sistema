@@ -1,14 +1,17 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 
 import {Form,Formik} from 'formik'
-import { usePersonas } from '../context/PersonasProvider'
+import { usePersonas } from '../context/ContextoProvider'
 import { useParams } from 'react-router-dom'
 import { useEffect,useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 function PersonasForm() {
-    
-    const {postPersonaRequest,updPersonasRequest,getPersona} = usePersonas();
+    const {postPersonaRequest,updPersonasRequest,getPersona,getTipoPersonas,getTipoDocumentos,getTipoDocumentoRequest,getTipoPersonaRequest} = usePersonas();
+    const [tipoPersona,setTipoPersona] = useState([]);
+    const [tipoDocumento,setTipoDocumento] = useState([]);
+   
     const [personas,setPersonas] = useState({
         personasid:0,
         nombres: '',
@@ -26,7 +29,6 @@ function PersonasForm() {
         try {
             if(params.id){
                 const res = await getPersona(params.id);
-                console.log(res[0])
                 setPersonas({
                     personasid:res[0].personasid,
                     nombres: res[0].nombres,
@@ -44,8 +46,30 @@ function PersonasForm() {
         }
         
     }
+
+    const cargarTipoDocumento = async()=>{
+        try {
+            const res = await getTipoDocumentos()
+            setTipoDocumento(res)
+        } catch (error) {
+            console.error(error);
+        }
+    }
+    const cargarTipoPersona = async()=>{
+        try {
+            const res = await getTipoPersonas()
+            setTipoPersona(res)
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+
     useEffect(()=>{
-        
+        cargarTipoDocumento();
+        cargarTipoPersona();
+    },[])
+    useEffect(()=>{
         cargarPersonas();
     },[params.id]) 
 
@@ -118,6 +142,15 @@ function PersonasForm() {
                                 onChange={handleChange} 
                                 value={values.nrodocumento || 0}/>
 
+                                <label className='block text-gray-700 text-sm font-bold mb-2'>Tipo documento</label>
+
+                                <select name="tipodocumento" defaultValue={values.tipodocumentoid || 1} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" >
+                                        {
+                                            tipoDocumento.map(tipo=>
+                                                <option value={tipo.id} key={tipo.id} className=" hover:bg-sky-700">{tipo.descripcion}</option>    
+                                            )
+                                        }
+                                </select>
                                 <label className='block text-gray-700 text-sm font-bold mb-2'>Email</label>
                                 <input 
                                 className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline' 
@@ -127,25 +160,16 @@ function PersonasForm() {
                                 onChange={handleChange} 
                                 value={values.email || ''}/>
 
-                                <label className='block text-gray-700 text-sm font-bold mb-2'>Tipo documento</label>
-                                <input 
-                                className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline' 
-                                type="number" 
-                                name='tipodocumentoid' 
-                                placeholder='Ingrese su tipo de documento' 
-                                onChange={handleChange} 
-                                value={values.tipodocumentoid || 0}/>
-
                                 <label className='block text-gray-700 text-sm font-bold mb-2'>Tipo persona</label>
-                                <input 
-                                className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline' 
-                                type="number" 
-                                name='tipopersonaid' 
-                                placeholder='Ingrese su tipo de persona' 
-                                onChange={handleChange} 
-                                value={values.tipopersonaid || 0}/>
 
-                                
+                                <select name="tipopersona" defaultValue={values.tipopersonaid || 1} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" >
+                                        {
+                                            tipoPersona.map(tipo=>
+                                                <option value={tipo.id} key={tipo.id} className=" hover:bg-sky-700">{tipo.descripcion}</option>    
+                                            )
+                                        }
+                                </select>
+
                                 <button 
                                 className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mt-4'
                                 type='Submit' 
@@ -161,3 +185,11 @@ function PersonasForm() {
 
 export default PersonasForm
 
+/*
+<input 
+                                className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline' 
+                                type="number" 
+                                name='tipodocumentoid' 
+                                placeholder='Ingrese su tipo de documento' 
+                                onChange={handleChange} 
+                                value={values.tipodocumentoid || 0}/> */

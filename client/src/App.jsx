@@ -1,6 +1,6 @@
 import {Routes,Route} from 'react-router-dom'
 import Navbar from './componentes/Navbar'
-import { PersonasContextProvider } from './context/PersonasProvider'
+import { PersonasContextProvider } from './context/ContextoProvider'
 import PersonasView from './views/PersonasView'
 import PersonasForm from './forms/PersonasForm'
 

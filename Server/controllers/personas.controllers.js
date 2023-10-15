@@ -17,7 +17,6 @@ export const getPersona = async(req,res)=>{
         if (result.rowCount == 0){
             return res.status(404).json({message: "persona no encontrada"})
         }
-        console.log("este resultado",result)
         res.json(result);
     } catch (error) {
         return res.status(500).json({message:error.message});

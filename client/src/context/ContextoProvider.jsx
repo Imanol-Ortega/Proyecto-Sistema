@@ -5,6 +5,8 @@ import { useContext, useState } from "react";
 
 import { PersonasContext } from "./Contexto";
 import {getPersonasRequest,getPersonaRequest,postPersonaRequest,updPersonasRequest,deletePersonasRequest} from '../api/personas.api'
+import { getTipoPersonasRequest,getTipoPersonaRequest } from "../api/tipopersona.api";
+import { getTipoDocumentosRequest,getTipoDocumentoRequest } from "../api/tipodocumento.api";
 
 export const usePersonas = ()=>{
     const context = useContext(PersonasContext);
@@ -20,6 +22,30 @@ export const PersonasContextProvider = ({children})=>{
         const response = await getPersonasRequest();
         setPersona(response.data);
     }
+    const getTipoPersonas = async(id)=>{
+        try {
+            const res = await getTipoPersonasRequest();
+            const aux = res.data;
+            const data = aux.map(function(tipo){
+                return {id:tipo.tipopersonaid,descripcion:tipo.descripcion};
+            });
+            return data
+        } catch (error) {
+            console.error(error);
+        }
+    };
+    const getTipoDocumentos = async(id)=>{
+        try {
+            const res = await getTipoDocumentosRequest();
+            const aux = res.data
+            const data = aux.map(function(tipo){
+                return {id:tipo.tipodocumentoid,descripcion:tipo.descripcion}
+            });
+            return data
+        } catch (error) {
+            console.error(error);
+        }
+    };
     const deletePersonas = async(id)=>{
         try {
             const response = await deletePersonasRequest(id);
@@ -37,40 +63,8 @@ export const PersonasContextProvider = ({children})=>{
         }
     }
     return (
-        <PersonasContext.Provider value={{persona,loadPersonas,getPersona,postPersonaRequest,updPersonasRequest,deletePersonas}}>
+        <PersonasContext.Provider value={{persona,loadPersonas,getPersona,postPersonaRequest,updPersonasRequest,deletePersonas,getTipoDocumentos,getTipoPersonas,getTipoPersonaRequest,getTipoDocumentoRequest}}>
             {children}
         </PersonasContext.Provider>
     );
-}
-/*const createPersona = async(values)=>{
-        try {
-            const response = await postPersonaRequest();
-            console.log(response);
-        } catch (error) {
-            console.error(error);
-        }
-    };
-    const getPersona = async(id)=>{
-        try {
-            const response = await getPersonaRequest(id);
-            return response.data.rows;
-        } catch (error) {
-            console.error(error);
-        }
-    }
-    const updatePersona = async(id,values)=>{
-        try {
-            const response = await updPersonasRequest(id,values);
-            console.log(response);
-        } catch (error) {
-            console.error(error);
-        }
-    }
-    const deletePersona = async(id)=>{
-        try {
-            const response = await deletePersona(id);
-            console.log(response);
-        } catch (error) {
-            console.error(error);
-        }
-    }*/
+};

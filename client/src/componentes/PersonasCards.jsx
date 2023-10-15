@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 
-import { usePersonas } from "../context/PersonasProvider"
+import { usePersonas } from "../context/ContextoProvider"
 import { useNavigate } from "react-router-dom"
 function PersonasCards({personas}) {
     const {deletePersonas} = usePersonas();
