@@ -8,6 +8,7 @@ function PersonasView() {
   useEffect(()=>{
       loadPersonas();
   },[])
+  console.log(persona)
   function renderMain(){
     if(persona===0) return <h1>No existen registros de personas</h1>
     return persona.map(per=>(
