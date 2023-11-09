@@ -184,12 +184,3 @@ function PersonasForm() {
 }
 
 export default PersonasForm
-
-/*
-<input 
-                                className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline' 
-                                type="number" 
-                                name='tipodocumentoid' 
-                                placeholder='Ingrese su tipo de documento' 
-                                onChange={handleChange} 
-                                value={values.tipodocumentoid || 0}/> */
