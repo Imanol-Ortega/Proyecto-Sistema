@@ -5,8 +5,8 @@ import  pkg  from "jsonwebtoken";
 
 export const getUsuario = async(req,res)=>{
     try {
-        const {nombre,pass} = req.body;
-        const resp = await pool.query('SELECT * FROM usuarios WHERE nombre = $1 AND pass = $2', [nombre,pass]);
+        const nombre = req.params.nombre;
+        const resp = await pool.query('SELECT * FROM usuarios WHERE nombre = $1 AND pass = $2', [req.params.nombre,req.params.pass]);
         if(resp.rowCount == 0){
             return res.status(404).json({message: "usuario no encontrado"})
         }
