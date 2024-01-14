@@ -3,11 +3,11 @@ import { pool } from "../db.js";
 export const getUser = async(req,res)=>{
     try {
         const resp = req.body;
-        const result = await pool.query('SELECT * FROM users WHERE nombre = $1 and passw = $2',[resp.nombre,resp,passw]);
+        const result = await pool.query('SELECT * FROM users WHERE username = $1 and userpassword = $2',[resp.name,resp.passw]);
         if(result.rowCount == 0 ){
             return res.status(404).json({message:"usuario no encontrado"})
         }
-        res.json(result)
+        res.json(true)
     } catch (error) {
         console.error(error);
     }
@@ -25,11 +25,8 @@ export const getUsers = async(req,res)=> {
 export const postUser = async(req,res)=>{
     try {
         const resp = req.body;
-        const result = await pool.query('INSERT INTO users (username,userpassword) VALUES ($1,$2)',[resp.nombre,resp,passw]);
-        if(result.rowCount == 0 ){
-            return res.status(404).json({message:"usuario no encontrado"})
-        }
-        res.json(result)
+        const result = await pool.query('INSERT INTO users (username,userpassword,tipopersonaid) VALUES ($1,$2,$3)',[resp.name,resp.passw,1]);
+        res.json(result) 
     } catch (error) {
         console.error(error)
     }
