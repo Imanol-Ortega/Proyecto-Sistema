@@ -4,8 +4,8 @@ export const getUsersRequest = async()=>{
     return await axios.get(`http://localhost:4000/users`);
 };
 
-export const getUserRequest = async(id,values)=>{
-    return await axios.get(`http://localhost:4000/users/${id}`,values);
+export const getUserRequest = async(name,passw)=>{
+    return await axios.get(`http://localhost:4000/users/${name}/${passw}`);
 };
 
 export const postUserRequest = async(values)=>{
@@ -19,3 +19,7 @@ export const updUserRequest = async(id,values)=>{
 export const dltUserRequest = async(id)=>{
     return await axios.delete(`http://localhost:4000/users/${id}`);
 };
+
+export const getUserNameRequest = async(name)=>{
+    return await axios.get(`http://localhost:4000/users/${name}`);
+}

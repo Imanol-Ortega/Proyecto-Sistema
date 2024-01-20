@@ -2,10 +2,9 @@ import { pool } from "../db.js";
 
 export const getUser = async(req,res)=>{
     try {
-        const resp = req.body;
-        const result = await pool.query('SELECT * FROM users WHERE username = $1 and userpassword = $2',[resp.name,resp.passw]);
+        const result = await pool.query('SELECT * FROM users WHERE username = $1 and userpassword = $2',[req.params.name,req.params.passw]);
         if(result.rowCount == 0 ){
-            return res.status(404).json({message:"usuario no encontrado"})
+            return res.json(false)
         }
         res.json(true)
     } catch (error) {
@@ -49,3 +48,15 @@ export const dltUser = async(req,res)=>{
         console.error(error);
     }
 };
+
+export const getUserName = async(req,res)=>{
+    try {
+        const result = await pool.query('SELECT * FROM users WHERE username = $1',[req.params.name]);
+        if(result.rowCount == 0 ){
+            return res.json(true)
+        }
+        res.json(false)
+    } catch (error) {
+        console.error(error);
+    }
+}
