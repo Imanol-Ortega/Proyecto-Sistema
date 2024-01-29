@@ -6,17 +6,19 @@ import Register from "./componentes/Sesion/Register"
 import Home from "./componentes/Home/Home"
 import Profile from "./componentes/Perfil/Profile"
 import Authentication from "./routes/Authentication"
+import NotFound from "./componentes/NotFound/NotFound"
+
 function App() {
 
   return (
-    <div className='bg-zinc-800 text-blue-50 h-full w-full '>
-     
-      <div className="container w-screen mx-auto">
+    <div className='padre bg-zinc-950 text-blue-50'>
+      <div className="mx-auto h-full">
         <AuthContextProvider>
-          <div className="w-full">
+          <div className="mx-10 py-1">
               <NavBar/>
-            </div>
+          </div>
           <Routes>
+            <Route path="*" element={<NotFound/>}></Route>
             <Route path="/" element={<Home/>}></Route>
             <Route path="/login" element={<Login/>}></Route>
             <Route path="/register" element={<Register/>}></Route>

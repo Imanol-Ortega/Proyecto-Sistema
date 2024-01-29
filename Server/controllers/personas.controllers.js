@@ -57,4 +57,3 @@ export const dltPersonas = async(req,res)=>{
     }
 };
 
-//funcion para devolver el tipo de persona

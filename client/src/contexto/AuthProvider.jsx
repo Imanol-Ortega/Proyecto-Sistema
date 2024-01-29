@@ -25,7 +25,7 @@ export const AuthContextProvider = ({children})=>{
     });
 
     const createUserCookie = (usuario)=>{
-        console.log(usuario)
+        
         Cookies.set('username',`${usuario.name}`,{expires : 7});
         Cookies.set('permisos',`${usuario.permisos}`,{expires : 7});
     };
