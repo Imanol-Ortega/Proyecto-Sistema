@@ -24,8 +24,8 @@ export const getUsers = async(req,res)=> {
 export const postUser = async(req,res)=>{
     try {
         const resp = req.body;
-        const result = await pool.query('INSERT INTO users (username,userpassword,tipopersonaid) VALUES ($1,$2,$3)',[resp.name,resp.passw,1]);
-        res.json(result) 
+        const result = await pool.query('INSERT INTO users (username,userpassword,tipopersonaid) VALUES ($1,$2,$3) RETURNING userid',[resp.name,resp.passw,1]);
+        res.json(result.rows[0].userid) 
     } catch (error) {
         console.error(error)
     }

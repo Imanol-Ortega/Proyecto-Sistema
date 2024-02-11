@@ -7,11 +7,12 @@ import Home from "./componentes/Home/Home"
 import Profile from "./componentes/Perfil/Profile"
 import Authentication from "./routes/Authentication"
 import NotFound from "./componentes/NotFound/NotFound"
+import Clientes from "./formularios/Clientes"
 
 function App() {
 
   return (
-    <div className='padre bg-zinc-950 text-blue-50'>
+    <div className='h-full bg-zinc-950 text-blue-50'>
       <div className="mx-auto h-full">
         <AuthContextProvider>
           <div className="mx-10 py-1">
@@ -23,11 +24,13 @@ function App() {
             <Route path="/login" element={<Login/>}></Route>
             <Route path="/register" element={<Register/>}></Route>
             <Route path="/perfil" element={<Authentication><Profile/></Authentication>}/>
+            <Route path="/perfil/nuevo/:id2" element={<Clientes/>} />
           </Routes>
         </AuthContextProvider>
       </div>
     </div>
   )
 }
+
 
 export default App

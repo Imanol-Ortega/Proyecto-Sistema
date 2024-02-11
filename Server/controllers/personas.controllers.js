@@ -17,7 +17,7 @@ export const getPersona = async(req,res)=>{
         if (result.rowCount == 0){
             return res.status(404).json({message: "persona no encontrada"})
         }
-        res.json(result);
+        res.json(result.rows);
     } catch (error) {
         return res.status(500).json({message:error.message});
     }
@@ -27,9 +27,9 @@ export const getPersona = async(req,res)=>{
 export const postPersonas = async(req,res)=>{
     try {
         const resp= req.body;
-        const result = await pool.query('INSERT INTO personas (nombres,apellidos,telefono,direccion,nrodocumento,email,tipodocumentoid,tipopersonaid) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)',
+        const result = await pool.query('INSERT INTO personas (nombres,apellidos,telefono,direccion,nrodocumento,email,tipodocumentoid,tipopersonaid) VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING personasid',
                                         [resp.nombres,resp.apellidos,resp.telefono,resp.direccion,resp.nrodocumento,resp.email,resp.tipodocumentoid,resp.tipopersonaid])
-        res.json(result);
+        res.json(result.rows);
     } catch (error) {
         return res.status(500).json({message:error.message})
     }

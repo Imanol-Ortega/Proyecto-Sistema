@@ -23,9 +23,9 @@ function Register() {
           actions.setSubmitting(true)
           const rp = await reg(values.name);
           if(rp.data==true){
-            await register(values);
+            const rsp = await register(values);
             actions.resetForm();
-            navigate('/login');
+            navigate('/perfil/nuevo/'+rsp.data);
           }
           else{
             actions.setSubmitting(false)
@@ -35,6 +35,7 @@ function Register() {
               passw:""
             })
           }
+          
           
         }}
       >
