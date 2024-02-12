@@ -173,6 +173,7 @@ function Clientes() {
                               Tipo de Documento
                             </label>
                             <select name="tipodocumentoid" defaultValue={values.tipodocumentoid || 2} className="w-full px-5 py-1 text-gray-700 bg-gray-300 rounded focus:outline-none focus:bg-white" onChange={handleChange}>
+                              <option value="">Seleccione una opción</option>
                               {
                                 tipodoc.map(tipo=>
                                   <option value={tipo.tipodocumentoid} key={tipo.tipodocumentoid} className=" hover:bg-sky-700">{tipo.descripcion}</option>
