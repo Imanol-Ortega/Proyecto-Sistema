@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
 import { Form, Formik } from 'formik'
@@ -8,7 +9,7 @@ import { useAuth } from '../contexto/AuthProvider'
 import { postPersonaRequest,getPersonaRequest,updPersonasRequest } from '../api/personas.api'
 import { postPerfilRequest } from '../api/perfil.api'
 
-function Clientes() {
+function Clientes({nombre}) {
   const [cliente,setCliente] = useState({
     nombres:"",
     apellidos:"",
@@ -34,15 +35,16 @@ function Clientes() {
     try {
         if(params.id){
             const res = await getPersonaRequest(params.id);
+            console.log(res.data)
             setCliente({
-              nombres:res.nombres,
-              apellidos:res.apellidos,
-              telefono:res.telefono,
-              direccion:res.direccion,
-              nrodocumento:res.nrodocumento,
-              email:res.email,
+              nombres:res.data[0].nombres,
+              apellidos:res.data[0].apellidos,
+              telefono:res.data[0].telefono,
+              direccion:res.data[0].direccion,
+              nrodocumento:res.data[0].nrodocumento,
+              email:res.data[0].email,
               tipopersonaid:'2',
-              tipodocumentoid:res.tipodocumentoid
+              tipodocumentoid:res.data[0].tipodocumentoid
             });
         }
     } catch (error) {
@@ -69,9 +71,12 @@ function Clientes() {
   const params = useParams();
   const navigate = useNavigate()
   useEffect(()=>{
-    cargarPersonas();
     cargarTipoDocumento();
   },[])
+
+  useEffect(()=>{
+    cargarPersonas();
+  },[params.id])
 
   return (
     <div>
@@ -105,7 +110,7 @@ function Clientes() {
                         onSubmit={handleSubmit}
                         >
                           <p className="text-white text-center text-xl font-bold">
-                              Informacion Personal
+                              Informacion Personal del {`${nombre}`}
                           </p>
 
                           <div className='mt-2'>
@@ -172,7 +177,7 @@ function Clientes() {
                             <label className='block text-sm text-white'>
                               Tipo de Documento
                             </label>
-                            <select name="tipodocumentoid" defaultValue={values.tipodocumentoid || 2} className="w-full px-5 py-1 text-gray-700 bg-gray-300 rounded focus:outline-none focus:bg-white" onChange={handleChange}>
+                            <select name="tipodocumentoid" value={values.tipodocumentoid || 2} className="w-full px-5 py-1 text-gray-700 bg-gray-300 rounded focus:outline-none focus:bg-white" onChange={handleChange} required>
                               <option value="">Seleccione una opción</option>
                               {
                                 tipodoc.map(tipo=>

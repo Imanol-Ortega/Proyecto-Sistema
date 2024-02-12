@@ -32,3 +32,12 @@ export const postFacturaCompra = async(req,res)=>{
         return res.status(500).json({message:error.message})
     } 
 };
+
+export const getDetalleFactura = async(req,res)=>{
+    try {
+        const result = await pool.query('SELECT cantidad,max(subtotal) as subtotal  FROM detallecompra WHERE inventarioid = $1 GROUP BY cantidad ORDER BY subtotal DESC LIMIT 1',[req.params.id]);
+        res.json(result.rows)
+    } catch (error) {
+        return res.status(500).json({message:error.message})
+    }
+}

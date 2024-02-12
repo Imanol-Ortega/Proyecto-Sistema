@@ -10,6 +10,9 @@ import proveedorRoutes from "./routes/proveedor.routes.js"
 import inventarioRoutes from "./routes/inventario.routes.js"
 import tipounidadmedidaRoutes from "./routes/tipounidadmedida.routes.js"
 import facturacompraRoutes from "./routes/facturacompra.routes.js"
+import subproductoRoutes from "./routes/subproducto.routes.js"
+import tipoproductoRoutes from "./routes/tipoproducto.routes.js"
+import productosRoutes from "./routes/productos.routes.js"
 
 const app = express();
  
@@ -26,7 +29,9 @@ app.use(proveedorRoutes);
 app.use(inventarioRoutes);
 app.use(tipounidadmedidaRoutes);
 app.use(facturacompraRoutes);
-
+app.use(subproductoRoutes);
+app.use(tipoproductoRoutes);
+app.use(productosRoutes);
 app.listen(PORT, ()=>{
     console.log(`SERVER CORRIENDO EN PUERTO ${PORT}`)
 });
