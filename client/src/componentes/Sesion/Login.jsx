@@ -9,7 +9,6 @@ function Login() {
     const [user,setUser] = useState({
       name:"",
       passw:"",
-      permisos:"cliente"
     });
     const [errores,setErrores] = useState("");
     const navigate = useNavigate();
@@ -28,10 +27,9 @@ function Login() {
                 setUser({
                   name:"",
                   passw:"",
-                  permisos:"cliente"
                 })
               }else{
-                login(values)
+                login(rp[0])
                 actions.resetForm();
                 navigate('/')
               }
@@ -40,7 +38,7 @@ function Login() {
           }}
         >
           {({handleChange,handleSubmit,values,isSubmitting})=>(
-            <div className="h-screen font-sans login bg-cover">
+            <div className="h-screen font-sans bg-cover">
   
               <div className="container mx-auto h-full flex flex-1 justify-center items-center">
   

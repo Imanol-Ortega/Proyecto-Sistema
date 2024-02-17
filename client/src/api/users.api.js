@@ -22,4 +22,8 @@ export const dltUserRequest = async(id)=>{
 
 export const getUserNameRequest = async(name)=>{
     return await axios.get(`http://localhost:4000/users/${name}`);
+};
+
+export const getUserUniqueRequest = async(id)=>{
+    return await axios.get(`http://localhost:4000/users/${id}`)
 }

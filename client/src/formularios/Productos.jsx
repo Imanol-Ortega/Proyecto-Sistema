@@ -26,7 +26,7 @@ function Productos() {
     const [newInventario,setNewInventario] = useState([]);
     const [inventario,setInventario] = useState([]);
     const [tipoElegido,setTipoElegido] = useState([]);
-
+    const [costos,setCostos] = useState(0);
     const [precio,setPrecio]= useState(0);
 
     const navigate = useNavigate();
@@ -60,22 +60,15 @@ function Productos() {
     const obtenerCosto = async(id)=>{
         try {
             const resp = await getDetalleFacturaRequest(id);
-            return resp.data[0]
+            setCostos(resp.data[0])
         } catch (error) {
             console.error(error);
         }
     }
 
     const agregarProducto = (values,valor)=>{
-        
         const nombre = filtrarNombres(values.inventarioid)
         const desc = filtrarDescripcion(values.inventarioid)
-        const costo = obtenerCosto(values.inventarioid);
-        
-
-        const aux1 =  (parseInt(valor.manoobra) + (costo*parseInt(values.cantidad)))
-
-        setPrecio(aux1+(aux1*((parseInt(valor.margen)/100))))
 
  
         setNewInventario([...newInventario,{inventarioid:values.inventarioid,nombre:nombre,desc:desc,cantidad:values.cantidad}])

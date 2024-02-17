@@ -1,8 +1,7 @@
 const PERMISOS = {
-    ADMIN: "admin",
-    CLIENTE : "cliente",
-    EMPLEADO : "empleado",
-    JEFE : "dueño"
+    ADMIN: "ADMIN",
+    CLIENTE : "CLIENTE",
+    EMPLEADO : "EMPLEADO"
 };
 
 export default PERMISOS;

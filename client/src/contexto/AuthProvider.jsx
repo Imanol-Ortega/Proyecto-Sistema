@@ -1,11 +1,12 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react-refresh/only-export-components */
 /* eslint-disable no-unused-vars */
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "./AuthContext";
 import { useLocation, useNavigate } from "react-router-dom";
-import { postUserRequest,getUserRequest,getUserNameRequest } from "../api/users.api"
+import { postUserRequest,getUserRequest,getUserNameRequest, getUserUniqueRequest } from "../api/users.api"
 import Cookies from "js-cookie"
+import PERMISOS from "../VariablesGlobales/Permisos";
 
 export const useAuth = ()=>{
     const context = useContext(AuthContext);
@@ -19,6 +20,7 @@ export const AuthContextProvider = ({children})=>{
     const redirecPath = location.state?.path || "/";
 
     const [user, setUser] = useState({
+        userid:"",
         username:"",
         userpassword:"",
         permisos:[]
@@ -26,12 +28,11 @@ export const AuthContextProvider = ({children})=>{
 
     const createUserCookie = (usuario)=>{
         
-        Cookies.set('username',`${usuario.name}`,{expires : 7});
-        Cookies.set('permisos',`${usuario.permisos}`,{expires : 7});
+        Cookies.set('userid',`${usuario.userid}`,{expires : 7});
+
     };
     const deleteUserCookie = ()=>{
-        Cookies.remove('username');
-        Cookies.remove('permisos');
+        Cookies.remove('userid');
     };
     const register = async(values)=>{
         try {
@@ -59,15 +60,54 @@ export const AuthContextProvider = ({children})=>{
     };
 
     const login = (usuario)=>{
-        
-        setUser({username:usuario.name,userpassword:usuario.passw,permisos:usuario.permisos})
+        let permission;
+
+        if(usuario.descripcion == "ADMIN"){
+            permission = PERMISOS.ADMIN
+        }
+        else if(usuario.descripcion == "CLIENTE"){
+            permission = PERMISOS.CLIENTE
+        }
+        else{
+            permission = PERMISOS.EMPLEADO
+        }
+
+
+        setUser({userid:usuario.userid,username:usuario.username,userpassword:usuario.userpassword,permisos:permission})
         createUserCookie(usuario);
         navigate(redirecPath,{replace:true});
     };
     const logout = () =>{
-        setUser({username:"",userpassword:"",permisos:[]});
+        setUser({userid:"",username:"",userpassword:"",permisos:[]});
         deleteUserCookie();
     };
+
+    const getUser = async()=>{
+        try {
+            const id = Cookies.get('userid')
+            if(id){
+                const resp = await getUserUniqueRequest(id);
+                let permission;
+
+                if(resp.data[0].descripcion == "ADMIN"){
+                    permission = PERMISOS.ADMIN
+                }
+                else if(resp.data[0].descripcion == "CLIENTE"){
+                    permission = PERMISOS.CLIENTE
+                }
+                else{
+                    permission = PERMISOS.EMPLEADO
+                }
+                setUser({userid:resp.data[0].userid,username:resp.data[0].username,userpassword:resp.data[0].userpassword,permisos:permission}) 
+            }
+        } catch (error) {
+            console.error(error)
+        }
+    }
+    
+    useEffect(()=>{
+        getUser();
+    },[])
 
     return (
         <AuthContext.Provider value={{user,login,logout,register,log,reg}}>

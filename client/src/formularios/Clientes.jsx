@@ -101,7 +101,7 @@ function Clientes({nombre}) {
           }
         >
           {({handleChange,handleSubmit,values,isSubmitting})=>(
-             <div className="h-screen font-sans bg-cover">
+             <div className="h-full font-sans bg-cover bg-zinc-950 ">
                <div className="container mx-auto h-full flex flex-1 justify-center items-center">
                  <div className="w-full max-w-lg">
                    <div className="leading-loose">

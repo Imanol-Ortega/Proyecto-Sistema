@@ -78,7 +78,7 @@ function SubProductos() {
           }}
         >
           {({handleChange,handleSubmit,values,isSubmitting})=>(
-            <div className="h-screen font-sans bg-cover">
+            <div className="h-full font-sans bg-cover bg-zinc-950 ">
   
               <div className="container mx-auto h-full flex flex-1 justify-center items-center">
   
@@ -87,7 +87,7 @@ function SubProductos() {
                     <div className="leading-loose">
                      
                       <Form 
-                      className="max-w-xl  h-full m-4 p-10 bg-white bg-opacity-25 rounded shadow-xl" 
+                      className="max-w-xl  h-full m-4 p-10 bg-white bg-opacity-25 rounded shadow-xl mt-20" 
                       onSubmit={handleSubmit}
                       >
 

@@ -55,7 +55,7 @@ function Proveedores() {
           }}
         >
           {({handleChange,handleSubmit,values,isSubmitting})=>(
-            <div className="h-screen font-sans bg-cover">
+            <div className="h-full font-sans bg-cover">
   
               <div className="container mx-auto h-full flex flex-1 justify-center items-center">
   
@@ -64,7 +64,7 @@ function Proveedores() {
                     <div className="leading-loose">
                      
                       <Form 
-                      className="max-w-lg m-4 p-10 bg-white bg-opacity-25 rounded shadow-xl" 
+                      className="max-w-lg m-4 mt-32 p-10 bg-white bg-opacity-25 rounded shadow-xl" 
                       onSubmit={handleSubmit}
                       >
 

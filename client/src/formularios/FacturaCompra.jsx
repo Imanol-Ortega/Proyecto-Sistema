@@ -82,22 +82,22 @@ function FacturaCompra() {
           }}
         >
           {({handleChange,handleSubmit,values,isSubmitting})=>(
-            <div className="h-screen font-sans bg-cover">
+            <div className="h-full font-sans bg-cover bg-zinc-950  ">
   
-              <div className="container mx-auto h-full flex flex-1 justify-center items-center">
+              <div className="container mx-auto flex flex-1 justify-center items-center">
   
                   <div className="w-full max-w-4xl">
   
                     <div className="leading-loose">
                      
                       <Form 
-                      className="max-w-4xl m-4 p-10 bg-white bg-opacity-25 rounded shadow-xl" 
+                      className="max-w-4xl m-4 p-10 bg-white bg-opacity-25 rounded shadow-xl mt-20" 
                       onSubmit={handleSubmit}
                       >
 
                           <p 
-                          className="text-white text-center text-lg font-bold">
-                          Proveedores
+                          className="text-white text-center text-lg font-bold mb-10">
+                          Factura Compra
                           </p>
                           <div className='flex flex-wrap justify-between'>
                                 <div className="mt-0">
