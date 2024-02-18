@@ -2,7 +2,7 @@ import { pool } from "../db.js";
 
 export const getInventarios = async(req,res)=>{
     try {
-        const result = await pool.query('SELECT * FROM inventario WHERE activo = TRUE');
+        const result = await pool.query('SELECT i.inventarioid,i.nombre,i.descripcion,i.cantidad,tu.tipounidadmedidaid,tu.descripcion as tipounidad FROM inventario as i INNER JOIN tipounidadmedida as tu ON tu.tipounidadmedidaid = i.tipounidadmedidaid WHERE activo = TRUE');
         res.json(result.rows);
     } catch (error) {
         return res.status(500).json({message:error.message});
