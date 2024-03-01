@@ -1,21 +1,20 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
 import { Form, Formik } from 'formik'
-import { useNavigate,Link, useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { getInventariosRequest } from '../api/inventario.api';
-import { getTipoProductoRequest, getTiposProductosRequest } from '../api/tipoproducto.api';
 import { postProductoRequest, updProductoRequest } from '../api/productos.api';
-import { getDetalleFacturaRequest } from '../api/facturacompra.api';
+import { getTipoUnidadMedidasRequest } from '../api/tipounidadmedida.api';
 
 function Productos() {
     const [productos,setProductos] = useState({
         nombre:"",
         descripcion:"",
         precio:0,
-        manoobra:0,
-        margen:0,
-        tipoproductoid:0,
+        imagen:"",
+        personalizable:"",
+        tipounidadmedidaid:0,
         detalle:{
             inventarioid:0,
             nombre:"",
@@ -23,63 +22,39 @@ function Productos() {
         }
     })
     const [errores,setErrores] = useState("");
-    const [tipoProducto,setTipoProducto] = useState([]);
     const [newInventario,setNewInventario] = useState([]);
     const [inventario,setInventario] = useState([]);
-    const [tipoElegido,setTipoElegido] = useState([]);
-    const [costos,setCostos] = useState([]);
     const [existe,setExiste] = useState([]);
-    const [precio,setPrecio]= useState(0);
+    const [tipounidad,setTipoUnidad] = useState([]);
+    const [image,setImage] = useState(null)
 
     const navigate = useNavigate();
     const params = useParams();
 
     const cargarInventario = async()=>{
         try {
-            let data = []
             const resp = await getInventariosRequest();
-            resp.data.forEach(async(element) => {
-                const rp = await getDetalleFacturaRequest(element.inventarioid)
-                data.push({inventarioid:element.inventarioid,cantidad:rp.data[0].cantidad,subtotal:rp.data[0].subtotal})
-            });
-            setCostos(data);
             setInventario(resp.data);
 
         } catch (error) {
             console.error(error);
         }
     }
-    const cargarTipoProducto = async()=>{
-        try {
-            const resp = await getTiposProductosRequest();
-            setTipoProducto(resp.data);
-        } catch (error) {
-            console.error(error)
-        }
-    }
-    const obtenerTipoProducto = async(id)=>{
-        try {
-            const resp = await getTipoProductoRequest(id)
-            setTipoElegido([...tipoElegido,resp.data[0].personalizable])
-        } catch (error) {
-            console.error(error)
-        }
-    }
 
+    const cargarTipoUnidad = async()=>{
+        try {
+            const resp = await getTipoUnidadMedidasRequest();
+            setTipoUnidad(resp.data);
+        } catch (error) {
+            console.error(error);
+        }
+    }
 
     const agregarProducto = (values,valor)=>{
-        let costo = []
-        setExiste([...existe,{inventarioid:values.inventarioid}])
+        setExiste([...existe,values.inventarioid])
         const nombre = filtrarNombres(values.inventarioid)
         const desc = filtrarDescripcion(values.inventarioid)
-        costos.forEach(element=>{
-            if (element.inventarioid == values.inventarioid) {
-                costo = element
-            }
-        });
-        let aux1 = (parseInt(valor.manoobra) + ( ( parseInt(costo.subtotal)/parseInt(costo.cantidad) * parseInt(values.cantidad) ) ) )
-        let price = aux1  + ( aux1 * (parseInt(valor.margen)/100) )
-        setPrecio(precio+parseInt(price))
+        
         setNewInventario([...newInventario,{inventarioid:values.inventarioid,nombre:nombre,desc:desc,cantidad:values.cantidad}])    
     }
 
@@ -102,7 +77,7 @@ function Productos() {
     
 
     useEffect(()=>{
-        cargarTipoProducto();
+        cargarTipoUnidad();
         cargarInventario();
     },[])
 
@@ -114,9 +89,9 @@ function Productos() {
           enableReinitialize = {true}
           onSubmit={async(values,actions)=>{
             if(params.id){
-                await updProductoRequest(params.id,{nombre:values.nombre,descripcion:values.descripcion,precio:precio,manoobra:values.manoobra,margen:values.margen,tipoproductoid:values.tipoproductoid,detalle:newInventario})
+                await updProductoRequest(params.id,{nombre:values.nombre,descripcion:values.descripcion,precio:values.precio,manoobra:values.manoobra,margen:values.margen,tipoproductoid:values.tipoproductoid,detalle:newInventario})
             }else{
-                await postProductoRequest({nombre:values.nombre,descripcion:values.descripcion,precio:precio,manoobra:values.manoobra,margen:values.margen,tipoproductoid:values.tipoproductoid,detalle:newInventario})
+                await postProductoRequest({nombre:values.nombre,descripcion:values.descripcion,precio:values.precio,manoobra:values.manoobra,margen:values.margen,tipoproductoid:values.tipoproductoid,detalle:newInventario})
             }
             setProductos([]);
             actions.resetForm();
@@ -189,57 +164,65 @@ function Productos() {
                                     type="number" 
                                     name='precio'
                                     placeholder="" 
-                                    value={values.precio || precio}
+                                    value={values.precio || ''}
                                     onChange={handleChange}
                                     required 
                                     />
                                 </div>
 
-                                <div className="mt-1">
-                                    <label className="block text-sm text-white">
-                                    Precio mano de obra</label>
-                            
-                                    <input 
-                                    className="w-full px-5 py-1 text-gray-700 bg-gray-300 rounded focus:outline-none focus:bg-white" 
-                                    type="number" 
-                                    name='manoobra'
-                                    placeholder="Escriba el nombre del producto" 
-                                    value={values.manoobra || ''}
-                                    onChange={handleChange}
-                                    required 
-                                    />
+                                <div className='mt-1'>
                                 </div>
 
-                                <div className="mt-1">
-                                    <label className="block text-sm text-white">
-                                    Margen de ganancia</label>
-                            
-                                    <input 
-                                    className="w-full px-5 py-1 text-gray-700 bg-gray-300 rounded focus:outline-none focus:bg-white" 
-                                    type="number" 
-                                    name='margen'
-                                    placeholder="Escriba el nombre del producto" 
-                                    value={values.margen || ''}
-                                    onChange={handleChange}
-                                    required 
-                                    />
-                                </div>
-                                
                                 <div className='mt-1'>
                                     <label className='block text-sm text-white'>
-                                    Tipo de Producto
+                                        Unidad de Medida
                                     </label>
-                                    
-                                    
-                                    <select name="tipoproductoid" value={values.tipoproductoid} className="px-5 p-2 text-gray-700 bg-gray-300 rounded focus:outline-none focus:bg-white" onChange={handleChange} onClick={()=>obtenerTipoProducto(values.tipoproductoid)}>
-                                    <option value="">Seleccione una opción</option>
-                                    {
-                                        tipoProducto.map(tipo=>(
-                                        <option value={tipo.tipoproductoid} key={tipo.tipoproductoid} className=" hover:bg-sky-700">{tipo.nombre }</option>
-                                        ))
-                                    }
+                                    <select name="tipounidadmedidaid" value={values.tipounidadmedidaid} className="px-5 p-2 text-gray-700 bg-gray-300 rounded focus:outline-none focus:bg-white" onChange={handleChange} required>
+                                        <option value="">Seleccione una Opcion</option>
+                                        {
+                                            tipounidad.map(tipo=>
+                                                <option value={tipo.tipounidadmedidaid} key={tipo.tipounidadmedidaid} className=" hover:bg-sky-700">{tipo.descripcion}</option>
+                                            )
+                                        }
                                     </select>
                                 </div>
+
+                                <div className='mt-1'>
+                                    <label className='block text-sm text-white'>
+                                        Imagen del Producto
+                                    </label>
+                                    <input 
+                                    className="w-full px-5 py-1 text-gray-700 bg-gray-300 rounded focus:outline-none focus:bg-white" 
+                                    type="file" 
+                                    name='imagen'
+                                    value={values.imagen || ''}
+                                    onChange={(e)=>{
+                                        const file = e.target.files[0];
+                                        const reader = new FileReader();
+                                        reader.onloadend = ()=>{
+                                            console.log(reader.result)
+                                            setImage(reader.result)
+                                        };
+                                        reader.readAsDataURL(file)
+                                    }}
+                                    required 
+                                    />
+                                </div>
+                                <div className='mt-10 flex flex-row  -ml-40'>
+
+                                    <input
+                                    className='w-4 h-4 text-teal-600 bg-gray-100 border-gray-300 rounded focus:ring-teal-500 dark:focus:ring-teal-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600' 
+                                    name='personalizable'
+                                    type="checkbox"
+                                    value={values.personalizable || ''} 
+                                    onChange={handleChange}
+                                    />
+
+                                    <label className=' ml-3 block text-sm text-white'>
+                                        Personalizable
+                                    </label>
+                                </div>
+
                             </div>
                             
                         </div>
@@ -280,7 +263,7 @@ function Productos() {
                                             type='button'
                                             onClick={()=>{
                                                 let exist = newInventario.length == 0 ? false : existe.includes(values.detalle.inventarioid)                                      
-                                                if(values.detalle.inventarioid && values.detalle.cantidad && values.manoobra && values.margen){
+                                                if(values.detalle.inventarioid && values.detalle.cantidad && values.precio && values.descripcion && values.nombre && values.tipounidadmedidaid){
                                                     if(exist == false){
                                                         setErrores("")
                                                         agregarProducto(values.detalle,values)
@@ -339,7 +322,7 @@ function Productos() {
                                                                    className='px-4 py-1 text-white font-light tracking-wider bg-red-700 hover:bg-red-600 rounded text-lg'
                                                                    onClick={()=>{
                                                                     setNewInventario(newInventario.filter(newInventario => newInventario.inventarioid != invent.inventarioid))
-                                                                    setExiste(existe.filter(existe=> existe.inventarioid != invent.inventarioid))
+                                                                    setExiste(existe.filter(existe=> existe != invent.inventarioid))
                                                                    }}
                                                                    >
                                                                     -
@@ -349,7 +332,6 @@ function Productos() {
                                                             </tr>
                                                             ))
                                                         }
-                                    
                                                     </tbody>
                                                 </table>
                                             </div>

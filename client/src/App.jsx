@@ -12,8 +12,6 @@ import Clientes from "./formularios/Clientes"
 import Proveedores from "./formularios/Proveedores"
 import Inventario from "./formularios/Inventario"
 import FacturaCompra from "./formularios/FacturaCompra"
-import SubProductos from "./formularios/SubProductos"
-import TipoProductos from "./formularios/TipoProductos"
 import Productos from "./formularios/Productos"
 import Authorization from "./routes/Authorization"
 import PERMISOS from "./VariablesGlobales/Permisos"
@@ -49,8 +47,6 @@ function App() {
             <Route path="/inventario/nuevo" element={<Inventario/>} />
             <Route path="/inventario/edit/:id" element={<Inventario/>} />
             <Route path="/facturacompra/nuevo" element={<FacturaCompra/>} />
-            <Route path="/subproducto/nuevo" element={<SubProductos/>} />
-            <Route path="/tipoproducto/nuevo" element={<TipoProductos/>} />
             <Route path="/productos/nuevo" element={<Productos/>} />
 
           </Routes>
