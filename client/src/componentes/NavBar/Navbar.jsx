@@ -29,7 +29,19 @@ export default function Navbar(){
                         <Link to="/subproducto/nuevo" className="focus:outline-none focus:ring focus:ring-red-600 bg-slate-200 text-gray-700 rounded px-2 py-1" >SubProducto</Link>
                     </li>
                     <li>
+                        <Link to="/tipodocumento/nuevo" className="focus:outline-none focus:ring focus:ring-red-600 bg-slate-200 text-gray-700 rounded px-2 py-1" >TipoDocumento</Link>
+                    </li>
+                    <li>
+                        <Link to="/tipopersona/nuevo" className="focus:outline-none focus:ring focus:ring-red-600 bg-slate-200 text-gray-700 rounded px-2 py-1" >TipoPersona</Link>
+                    </li>
+                    <li>
+                        <Link to="/tipounidadmedida/nuevo" className="focus:outline-none focus:ring focus:ring-red-600 bg-slate-200 text-gray-700 rounded px-2 py-1" >TipoUnidadMedida</Link>
+                    </li>
+                    <li>
                         <Link to="/tipoproducto/nuevo" className="focus:outline-none focus:ring focus:ring-red-600 bg-slate-200 text-gray-700 rounded px-2 py-1" >TipoProducto</Link>
+                    </li>
+                    <li>
+                        <Link to="/categoria/nuevo" className="focus:outline-none focus:ring focus:ring-red-600 bg-slate-200 text-gray-700 rounded px-2 py-1" >Categorias</Link>
                     </li>
                     <li>
                         <Link to="/productos/nuevo" className="focus:outline-none focus:ring focus:ring-red-600 bg-slate-200 text-gray-700 rounded px-2 py-1" >Productos</Link>
