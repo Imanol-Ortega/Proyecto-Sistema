@@ -25,11 +25,10 @@ export const AuthContextProvider = ({children})=>{
         userpassword:"",
         permisos:[]
     });
+    const [listo,setListo] = useState(false)
 
-    const createUserCookie = (usuario)=>{
-        
+    const createUserCookie = (usuario,permisos)=>{       
         Cookies.set('userid',`${usuario.userid}`,{expires : 7});
-
     };
     const deleteUserCookie = ()=>{
         Cookies.remove('userid');
@@ -72,12 +71,13 @@ export const AuthContextProvider = ({children})=>{
             permission = PERMISOS.EMPLEADO
         }
 
-
+        setListo(true)
         setUser({userid:usuario.userid,username:usuario.username,userpassword:usuario.userpassword,permisos:permission})
-        createUserCookie(usuario);
+        createUserCookie(usuario,permission);
         navigate(redirecPath,{replace:true});
     };
     const logout = () =>{
+        setListo(false)
         setUser({userid:"",username:"",userpassword:"",permisos:[]});
         deleteUserCookie();
     };
@@ -98,19 +98,20 @@ export const AuthContextProvider = ({children})=>{
                 else{
                     permission = PERMISOS.EMPLEADO
                 }
+                setListo(true)
                 setUser({userid:resp.data[0].userid,username:resp.data[0].username,userpassword:resp.data[0].userpassword,permisos:permission}) 
             }
         } catch (error) {
             console.error(error)
         }
     }
-    
+
     useEffect(()=>{
         getUser();
     },[])
 
     return (
-        <AuthContext.Provider value={{user,login,logout,register,log,reg}}>
+        <AuthContext.Provider value={{user,login,logout,register,log,reg,listo}}>
             {children}
         </AuthContext.Provider>
     );

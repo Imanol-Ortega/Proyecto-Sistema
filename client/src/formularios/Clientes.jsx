@@ -2,7 +2,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
 import { Form, Formik } from 'formik'
-import { useNavigate,useParams  } from 'react-router-dom'
+import { Link, useNavigate,useParams  } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { getTipoDocumentosRequest } from '../api/tipodocumento.api';
 import { useAuth } from '../contexto/AuthProvider'
@@ -17,8 +17,8 @@ function Clientes({nombre}) {
     direccion:"",
     nrodocumento:"",
     email:"",
-    tipopersonaid:2,
-    tipodocumentoid:0
+    tipopersonaid: nombre=='Cliente' ? '2':'1',
+    tipodocumentoid:""
   });
   const [tipodoc,setTipodoc] = useState([]);
   const [errores,setErrores] = useState("");
@@ -35,7 +35,6 @@ function Clientes({nombre}) {
     try {
         if(params.id){
             const res = await getPersonaRequest(params.id);
-            console.log(res.data)
             setCliente({
               nombres:res.data[0].nombres,
               apellidos:res.data[0].apellidos,
@@ -43,7 +42,7 @@ function Clientes({nombre}) {
               direccion:res.data[0].direccion,
               nrodocumento:res.data[0].nrodocumento,
               email:res.data[0].email,
-              tipopersonaid:'2',
+              tipopersonaid:nombre=='Cliente' ? '2':'1',
               tipodocumentoid:res.data[0].tipodocumentoid
             });
         }
@@ -52,20 +51,18 @@ function Clientes({nombre}) {
     }
   }
 
-  const validateEmail = (email)=>{
+  /* const validateEmail = (email)=>{
     const valEmail = /^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/;
     
     if(valEmail.test(email)){
       setErrores("");
-      cliente.email = email
-      setCliente(cliente)
       return true
     }else{
       setErrores("Email invalido");
       return false;
     }
     
-  }
+  } */
 
 
   const params = useParams();
@@ -86,17 +83,31 @@ function Clientes({nombre}) {
           onSubmit={async(values,actions)=>{
               if(params.id){
                 await updPersonasRequest(params.id,values)
+                actions.resetForm();
+                if(nombre == 'Cliente'){
+                  navigate('/cliente/vista');
+                }else{
+                  navigate('/empleado/vista')
+                }
               }
               else{
                 const rsp = await postPersonaRequest(values);
-                const idu = parseInt(params.id2)
-                const envv = {personaid:rsp.data[0].personasid,userid:idu}
-                console.log(envv)
-                await postPerfilRequest(envv)
+                if(nombre == 'Cliente' && params.id2){
+                  const idu = parseInt(params.id2)
+                  const envv = {personaid:rsp.data[0].personasid,userid:idu}
+                  console.log(envv)
+                  await postPerfilRequest(envv)
+                  actions.resetForm();
+                  navigate('/login');
+                }
+                actions.resetForm();
+                if(nombre == 'Cliente'){
+                  navigate('/cliente/vista');
+                }else{
+                  navigate('/empleado/vista')
+                }
               }
-              setCliente([])
-              actions.resetForm();
-              navigate('/');
+              
             }
           }
         >
@@ -106,7 +117,7 @@ function Clientes({nombre}) {
                  <div className="w-full max-w-lg">
                    <div className="leading-loose">
                       <Form 
-                        className="max-w-sm m-4 p-10 bg-white bg-opacity-25 rounded shadow-xl" 
+                        className="max-w-lg m-4 p-10 bg-white bg-opacity-25 rounded shadow-xl mt-40" 
                         onSubmit={handleSubmit}
                         >
                           <p className="text-white text-center text-xl font-bold">
@@ -177,7 +188,7 @@ function Clientes({nombre}) {
                             <label className='block text-sm text-white'>
                               Tipo de Documento
                             </label>
-                            <select name="tipodocumentoid" value={values.tipodocumentoid || 2} className="w-full px-5 py-1 text-gray-700 bg-gray-300 rounded focus:outline-none focus:bg-white" onChange={handleChange} required>
+                            <select name="tipodocumentoid" value={values.tipodocumentoid} className="w-full px-5 py-1 text-gray-700 bg-gray-300 rounded focus:outline-none focus:bg-white" onChange={handleChange} required>
                               <option value="">Seleccione una opción</option>
                               {
                                 tipodoc.map(tipo=>
@@ -211,15 +222,15 @@ function Clientes({nombre}) {
                               className="w-full px-5 py-1 text-gray-700 bg-gray-300 rounded focus:outline-none focus:bg-white" 
                               name='email'
                               placeholder='Escriba su E-mail'
-                              defaultValue={values.email || ''}
-                              onChange={(e)=>{validateEmail(e.currentTarget.value)}}
+                              value={values.email || ''}
+                              onChange={handleChange}
                               required 
                                />
                           </div>
 
                           {errores.length>0 ?<div className='flex justify-center align-middle font-mono text-justify text-red-500 text-base mt-5'> {errores} </div>: null}
 
-                          <div className="mt-4 items-center flex justify-between">
+                          <div className="mt-4 items-center flex justify-start">
   
                               <button 
                               className="px-4 py-1 text-white font-light tracking-wider bg-gray-900 hover:bg-gray-800 rounded"
@@ -227,7 +238,12 @@ function Clientes({nombre}) {
                               disabled={isSubmitting}>
                               Guardar
                               </button>
-  
+                              {
+                                nombre == 'Cliente' ? 
+                                <Link to='/cliente/vista'  className=" ml-2 px-4 py-1 text-white font-light tracking-wider bg-gray-900 hover:bg-gray-800 rounded">Cancelar</Link>
+                                :
+                                <Link to='/empleado/vista'  className=" ml-2 px-4 py-1 text-white font-light tracking-wider bg-gray-900 hover:bg-gray-800 rounded">Cancelar</Link>
+                              }
                           </div>
 
                       </Form>

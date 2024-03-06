@@ -3,7 +3,7 @@ import { pool } from "../db.js";
 //funcion para obtener todos los datos de personas
 export const getPersonas = async(req,res)=>{
     try {
-        const result = await pool.query('SELECT * FROM personas');
+        const result = await pool.query('SELECT * FROM personas WHERE activo = TRUE AND tipopersonaid = $1 ORDER BY personasid',[req.params.id]);
         res.json(result.rows);
     } catch (error) {
         return res.status(500).json({message:error.message});
@@ -31,16 +31,16 @@ export const postPersonas = async(req,res)=>{
                                         [resp.nombres,resp.apellidos,resp.telefono,resp.direccion,resp.nrodocumento,resp.email,resp.tipodocumentoid,resp.tipopersonaid])
         res.json(result.rows);
     } catch (error) {
-        return res.status(500).json({message:error.message})
+        return res.status(500).json({message:error})
     }
 };
 
 // funcion para actualizar la tabla personas
 export const updPersonas = async(req,res)=>{
     try {
-        const {nombres,apellidos,telefono,direccion,nrodocumento,email,td,tp} = req.body;
+        const {nombres,apellidos,telefono,direccion,nrodocumento,email,tipodocumentoid,tipopersonaid} = req.body;
         const result = await pool.query('UPDATE personas SET nombres = $1, apellidos = $2, telefono = $3, direccion = $4, nrodocumento = $5, email = $6, tipodocumentoid = $7, tipopersonaid = $8 WHERE personasid = $9 ',
-                                        [nombres,apellidos,telefono,direccion,nrodocumento,email,td,tp,req.params.id]);
+                                        [nombres,apellidos,telefono,direccion,nrodocumento,email,tipodocumentoid,tipopersonaid,req.params.id]);
         res.json(result)
     } catch (error) {
         return res.status(500).json({message:error.message})
@@ -50,10 +50,9 @@ export const updPersonas = async(req,res)=>{
 // funcion para eliminar de la tabla personas
 export const dltPersonas = async(req,res)=>{
     try {
-        const result = await pool.query('DELETE FROM personas WHERE personasid = $1',[req.params.id]);
-        res.json(result)
+        const result = await pool.query('UPDATE personas SET activo = FALSE WHERE personasid = $1',[req.params.id]);
+        res.json(result.rows)
     } catch (error) {
         return res.status(500).json({message:error.message})
     }
 };
-

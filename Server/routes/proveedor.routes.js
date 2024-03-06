@@ -12,6 +12,6 @@ router.post('/proveedor',postProveedores);
 
 router.put('/proveedor/:id',updProveedores);
 
-router.delete('/proveedor/:id',dltProveedores);
+router.put('/proveedor/dlt/:id',dltProveedores);
 
 export default router;

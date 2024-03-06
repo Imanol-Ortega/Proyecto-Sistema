@@ -17,5 +17,5 @@ export const updProveedoresRequest = async(id,values)=>{
 };
 
 export const dltProveedoresRequest = async(id)=>{
-    return await axios.delete(`http://localhost:4000/proveedor/${id}`);
+    return await axios.put(`http://localhost:4000/proveedor/dlt/${id}`);
 }

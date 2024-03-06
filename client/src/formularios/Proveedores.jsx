@@ -3,7 +3,7 @@ import { useNavigate,Link,useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { Form, Formik } from 'formik'
 import { getTipoDocumentosRequest } from '../api/tipodocumento.api';
-import { postProveedoresRequest, updProveedoresRequest } from '../api/proveedor.api';
+import { getProveedorRequest, postProveedoresRequest, updProveedoresRequest } from '../api/proveedor.api';
 
 function Proveedores() {
     const [proveedor,setProveedor] = useState({
@@ -29,11 +29,31 @@ function Proveedores() {
           console.error(error);
         }
       }
+      const cargarProveedor = async(id)=>{
+        try {
+          const rp = await getProveedorRequest(id);
+          setProveedor({
+            nombre:rp.data[0].nombre,
+            email:rp.data[0].email,
+            telefono:rp.data[0].telefono,
+            direccion:rp.data[0].direccion,
+            ruc:rp.data[0].ruc,
+            tipodocumentoid:rp.data[0].tipodocumentoid
+          })
+        } catch (error) {
+          console.error(error)
+        }
+      }
 
       useEffect(()=>{
         cargarTipoDocumento();
       },[])
 
+      useEffect(()=>{
+        if(params.id){
+          cargarProveedor(params.id)
+        }
+      },[params.id])
 
 
   return (
@@ -49,9 +69,8 @@ function Proveedores() {
               else{
                 await postProveedoresRequest(values);
               }
-              setProveedor([])
               actions.resetForm();
-              navigate('/');
+              navigate('/proveedores/vista');           
           }}
         >
           {({handleChange,handleSubmit,values,isSubmitting})=>(
@@ -147,7 +166,7 @@ function Proveedores() {
                               Tipo de Documento
                             </label>
 
-                            <select name="tipodocumentoid" defaultValue={values.tipodocumentoid || 2} className="w-full px-5 py-1 text-gray-700 bg-gray-300 rounded focus:outline-none focus:bg-white" onChange={handleChange}>
+                            <select name="tipodocumentoid" value={values.tipodocumentoid || 2} className="w-full px-5 py-1 text-gray-700 bg-gray-300 rounded focus:outline-none focus:bg-white" onChange={handleChange}>
                               <option value="">Seleccione una opción</option>
                               {
                                 tipodoc.map(tipo=>
@@ -177,7 +196,7 @@ function Proveedores() {
 
                             {errores.length>0 ?<div className='flex justify-center align-middle font-mono text-justify text-red-500 text-base mt-5'> {errores} </div>: null}
 
-                            <div className="mt-4 items-center flex justify-between">
+                            <div className="mt-4 items-center flex justify-start">
   
                               <button 
                               className="px-4 py-1 text-white font-light tracking-wider bg-gray-900 hover:bg-gray-800 rounded"
@@ -185,6 +204,7 @@ function Proveedores() {
                               disabled={isSubmitting}>
                               Guardar
                               </button>
+                              <Link to='/proveedores/vista'  className=" ml-2 px-4 py-1 text-white font-light tracking-wider bg-gray-900 hover:bg-gray-800 rounded">Cancelar</Link>
   
                             </div>
                       </Form>

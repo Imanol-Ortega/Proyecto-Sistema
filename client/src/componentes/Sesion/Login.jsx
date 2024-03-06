@@ -30,8 +30,7 @@ function Login() {
                 })
               }else{
                 login(rp[0])
-                actions.resetForm();
-                navigate('/')
+                actions.resetForm();           
               }
               
             

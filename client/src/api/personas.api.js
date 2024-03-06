@@ -1,7 +1,7 @@
 import axios from 'axios'
 
-export const getPersonasRequest = async()=>{
-    return await axios.get('http://localhost:4000/personas');
+export const getPersonasRequest = async(value)=>{
+    return await axios.get(`http://localhost:4000/personas/a/${value}`);
 };
 
 export const getPersonaRequest = async(id)=>{
@@ -18,5 +18,5 @@ export const updPersonasRequest = async(id,value)=>{
 };
 
 export const deletePersonasRequest = async(id)=>{
-    return await axios.delete(`http://localhost:4000/personas/${id}`);
+    return await axios.put(`http://localhost:4000/personas/dlt/${id}`);
 };
