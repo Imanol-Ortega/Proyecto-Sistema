@@ -3,41 +3,55 @@
 import { Form, Formik } from 'formik'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import { getInventariosRequest } from '../api/inventario.api';
-import { postProductoRequest, updProductoRequest } from '../api/productos.api';
+import { getProductoRequest, getProductoSubproductoRequest, postProductoRequest, updProductoRequest } from '../api/productos.api';
 import { getTipoUnidadMedidasRequest } from '../api/tipounidadmedida.api';
+import { getCategoriasRequest } from '../api/categoria.api';
+import { getTipoProductosRequest } from '../api/tipoproducto.api';
+import { getSubProductosRequest } from '../api/subproducto.api';
+import { getTipoSubproductosRequest } from '../api/tiposubproducto.api';
 
 function Productos() {
     const [productos,setProductos] = useState({
         nombre:"",
         descripcion:"",
         precio:0,
-        imagen:"",
-        personalizable:"",
-        tipounidadmedidaid:0,
+        tipounidadmedidaid:"",
+        tipoproductoid:"",
+        categoriaid:"",
         detalle:{
-            inventarioid:0,
-            nombre:"",
-            cantidad:0
+            subproductoid:""
         }
     })
     const [errores,setErrores] = useState("");
     const [newInventario,setNewInventario] = useState([]);
-    const [inventario,setInventario] = useState([]);
+    const [subproductos,setSubProductos] = useState([]);
+    const [newSub,setNewSub] = useState([]);
     const [existe,setExiste] = useState([]);
     const [tipounidad,setTipoUnidad] = useState([]);
     const [image,setImage] = useState(null)
+    const [tipoproductos,setTipoProductos] = useState([]);
+    const [categorias,setCategorias] = useState([]);
+    const [tiposubproducto,setTipoSubProducto] = useState([]);
+    const [productoSubproducto,setProductoSubproducto] = useState([]);
+    const [inventcargado,setInventCargado] = useState(false)
 
     const navigate = useNavigate();
     const params = useParams();
 
-    const cargarInventario = async()=>{
+    const cargarSubProductos = async()=>{
         try {
-            const resp = await getInventariosRequest();
-            setInventario(resp.data);
-
+            const rp = await getSubProductosRequest();
+            setSubProductos(rp.data)
         } catch (error) {
             console.error(error);
+        }
+    }
+    const cargarTipoSubProducto = async()=>{
+        try {
+            const rp = await getTipoSubproductosRequest();
+            setTipoSubProducto(rp.data);
+        } catch (error) {
+            console.error(error)
         }
     }
 
@@ -49,37 +63,110 @@ function Productos() {
             console.error(error);
         }
     }
-
-    const agregarProducto = (values,valor)=>{
-        setExiste([...existe,values.inventarioid])
-        const nombre = filtrarNombres(values.inventarioid)
-        const desc = filtrarDescripcion(values.inventarioid)
-        
-        setNewInventario([...newInventario,{inventarioid:values.inventarioid,nombre:nombre,desc:desc,cantidad:values.cantidad}])    
+    const cargarTipoProductos = async()=>{
+        try {
+            const rp = await getTipoProductosRequest();
+            setTipoProductos(rp.data)
+        } catch (error) {
+            console.error(error);
+        }
+    }
+    const cargarCategorias = async()=>{
+        try {
+            const rp = await getCategoriasRequest();
+            setCategorias(rp.data)
+        } catch (error) {
+            console.error(error);
+        }
     }
 
+    const agregarProducto = (values,valor)=>{
+        setExiste([...existe,values.subproductoid])
+        const nombre = filtrarNombres(values.subproductoid)
+        const tiposub = filtrarTipoSub(values.subproductoid)
+        const precio = filtrarPrecio(values.subproductoid)
+        setNewInventario([...newInventario,{subproductoid:values.subproductoid,nombre:nombre,precio:precio,tiposub:tiposub}])    
+    }  
     const filtrarNombres = (id)=>{
-        const result = inventario.map((inv)=>{
-            if(inv.inventarioid==id){
+        const result = subproductos.map((inv)=>{
+            if(inv.subproductoid==id){
                 return inv.nombre
             }
         })
         return result
-    }
-    const filtrarDescripcion = (id)=>{
-        const result = inventario.map((inv)=>{
-            if(inv.inventarioid==id){
-                return inv.descripcion
+    } 
+    const filtrarTipoSub = (id)=>{
+        const result = subproductos.map((inv)=>{
+            if(inv.subproductoid==id){
+                return inv.tiposub
+            }
+        })
+        return result
+    } 
+
+    const filtrarPrecio = (id)=>{
+        const result = subproductos.map((inv)=>{
+            if(inv.subproductoid==id){
+                return inv.precio
             }
         })
         return result
     }
     
+    const cargarProductos = async(id)=>{
+        try {
+            const rp = await getProductoRequest(id);
+            const rp2 = await getProductoSubproductoRequest(id);
+            setProductoSubproducto(rp2.data)
+            setProductos({
+                nombre:rp.data[0].nombre,
+                descripcion:rp.data[0].descripcion,
+                precio:rp.data[0].precio,
+                tipounidadmedidaid:rp.data[0].tipounidadmedidaid,
+                tipoproductoid:rp.data[0].tipoproductoid,
+                categoriaid:rp.data[0].categoriaid,
+                detalle:{
+                    subproductoid:""
+                }
+            })
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
 
     useEffect(()=>{
+        cargarSubProductos();
+        cargarTipoSubProducto();
         cargarTipoUnidad();
-        cargarInventario();
+        cargarCategorias();
+        cargarTipoProductos();
     },[])
+
+    useEffect(()=>{
+        if(params.id){
+            cargarProductos(params.id);
+        }
+    },[params.id])
+
+    useEffect(()=>{
+        if(productoSubproducto.length>0 && !inventcargado ){
+            productoSubproducto.map((prosub)=>{
+                setExiste((prev)=>[...prev,prosub.subproductoid]);
+                const nombre = filtrarNombres(prosub.subproductoid)
+                const tiposub = filtrarTipoSub(prosub.subproductoid)
+                const precio = filtrarPrecio(prosub.subproductoid)
+                console.log(prosub.subproductoid)
+                setNewInventario((prev) => [...prev,{
+                    subproductoid:prosub.subproductoid,
+                    nombre:nombre,
+                    precio:precio,
+                    tiposub:tiposub
+                }]) 
+            })
+            setInventCargado(true)
+        }
+    },[productoSubproducto])
 
 
   return (
@@ -87,15 +174,36 @@ function Productos() {
         <Formik
           initialValues={productos}
           enableReinitialize = {true}
-          onSubmit={async(values,actions)=>{
+          onSubmit={async(values,actions)=>{          
             if(params.id){
-                await updProductoRequest(params.id,{nombre:values.nombre,descripcion:values.descripcion,precio:values.precio,manoobra:values.manoobra,margen:values.margen,tipoproductoid:values.tipoproductoid,detalle:newInventario})
+                await updProductoRequest(
+                    params.id,
+                    {
+                        nombre:values.nombre,
+                        descripcion:values.descripcion,
+                        precio:values.precio,
+                        imagen:image,
+                        tipounidadmedidaid:values.tipounidadmedidaid,
+                        tipoproductoid:values.tipoproductoid,
+                        categoriaid:values.categoriaid,
+                        detalle:newInventario
+                    })
             }else{
-                await postProductoRequest({nombre:values.nombre,descripcion:values.descripcion,precio:values.precio,manoobra:values.manoobra,margen:values.margen,tipoproductoid:values.tipoproductoid,detalle:newInventario})
+                await postProductoRequest(
+                    {
+                        nombre:values.nombre,
+                        descripcion:values.descripcion,
+                        precio:values.precio,
+                        imagen:image,
+                        tipounidadmedidaid:values.tipounidadmedidaid,
+                        tipoproductoid:values.tipoproductoid,
+                        categoriaid:values.categoriaid,
+                        detalle:newInventario
+                    })
             }
             setProductos([]);
             actions.resetForm();
-            navigate('/')
+            navigate('/productos/vista')     
         }}
         >
           {({handleChange,handleSubmit,values,isSubmitting})=>(
@@ -164,18 +272,15 @@ function Productos() {
                                     type="number" 
                                     name='precio'
                                     placeholder="" 
-                                    value={values.precio || ''}
+                                    value={values.precio || 0}
                                     onChange={handleChange}
                                     required 
                                     />
-                                </div>
-
-                                <div className='mt-1'>
-                                </div>
+                                </div>                              
 
                                 <div className='mt-1'>
                                     <label className='block text-sm text-white'>
-                                        Unidad de Medida
+                                        Unidad de Medida del precio
                                     </label>
                                     <select name="tipounidadmedidaid" value={values.tipounidadmedidaid} className="px-5 p-2 text-gray-700 bg-gray-300 rounded focus:outline-none focus:bg-white" onChange={handleChange} required>
                                         <option value="">Seleccione una Opcion</option>
@@ -185,96 +290,92 @@ function Productos() {
                                             )
                                         }
                                     </select>
+                                </div>                               
+
+                                <div className='mt-1'>
+                                    <label className='block text-sm text-white'>
+                                        Tipo Producto
+                                    </label>
+                                    <select name="tipoproductoid" value={values.tipoproductoid} className="px-5 p-2 text-gray-700 bg-gray-300 rounded focus:outline-none focus:bg-white" onChange={handleChange} required>
+                                        <option value="">Seleccione una Opcion</option>
+                                        {
+                                            tipoproductos.map(tipo=>
+                                                <option value={tipo.tipoproductoid} key={tipo.tipoproductoid} className=" hover:bg-sky-700">{tipo.descripcion}</option>
+                                            )
+                                        }
+                                    </select>
                                 </div>
 
                                 <div className='mt-1'>
                                     <label className='block text-sm text-white'>
-                                        Imagen del Producto
+                                        Categoria
                                     </label>
-                                    <input 
-                                    className="w-full px-5 py-1 text-gray-700 bg-gray-300 rounded focus:outline-none focus:bg-white" 
-                                    type="file" 
-                                    name='imagen'
-                                    value={values.imagen || ''}
-                                    onChange={(e)=>{
-                                        const file = e.target.files[0];
-                                        const reader = new FileReader();
-                                        reader.onloadend = ()=>{
-                                            console.log(reader.result)
-                                            setImage(reader.result)
-                                        };
-                                        reader.readAsDataURL(file)
-                                    }}
-                                    required 
-                                    />
-                                </div>
-                                <div className='mt-10 flex flex-row  -ml-40'>
-
-                                    <input
-                                    className='w-4 h-4 text-teal-600 bg-gray-100 border-gray-300 rounded focus:ring-teal-500 dark:focus:ring-teal-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600' 
-                                    name='personalizable'
-                                    type="checkbox"
-                                    value={values.personalizable || ''} 
-                                    onChange={handleChange}
-                                    />
-
-                                    <label className=' ml-3 block text-sm text-white'>
-                                        Personalizable
-                                    </label>
-                                </div>
-
+                                    <select name="categoriaid" value={values.categoriaid} className="px-5 p-2 text-gray-700 bg-gray-300 rounded focus:outline-none focus:bg-white" onChange={handleChange} required>
+                                        <option value="">Seleccione una Opcion</option>
+                                        {
+                                            categorias.map(tipo=>
+                                                <option value={tipo.categoriaid} key={tipo.categoriaid} className=" hover:bg-sky-700">{tipo.descripcion}</option>
+                                            )
+                                        }
+                                    </select>
+                                </div>                                              
                             </div>
                             
                         </div>
                         <div className='max-w-2xl flex justify-center align-middle mt-5 bg-slate-700 flex-col px-5 py-5 ml-14 rounded-md'>
                             <div className='max-w-xl flex justify-center align-middle ml-5'>
+                                <div className="ml-5 max-w-xs">
+        
+                                    <label className="block text-sm text-white">
+                                    Tipo SubProducto</label>
+                                    <select 
+                                    className="px-5 p-2 text-gray-700 bg-gray-300 rounded focus:outline-none focus:bg-white" 
+                                    onChange={(e)=>{
+                                        setNewSub(subproductos.filter((n)=>n.tiposubproductoid == e.currentTarget.value))
+                                    }}
+                                    >
+                                        <option value="">Seleccione una opción</option>
+                                        {
+                                            tiposubproducto.map(tipo=>(
+                                                <option value={tipo.tiposubproductoid} key={tipo.tiposubproductoid} className=" hover:bg-sky-700">{tipo.descripcion}</option>
+                                            ))
+                                        }
+                                    </select>
+                                   
+        
+                                </div>
                                 <div className='ml-2 mr-4'>
                                     <label className='block text-sm text-white'>
                                     Producto
                                     </label>
-                                    <select name="detalle.inventarioid" value={values.detalle.inventarioid} className="px-5 p-2 text-gray-700 bg-gray-300 rounded focus:outline-none focus:bg-white" onChange={handleChange}>
+                                    <select name="detalle.subproductoid" value={values.detalle.subproductoid} className="px-5 p-2 text-gray-700 bg-gray-300 rounded focus:outline-none focus:bg-white" onChange={handleChange}>
                                         <option value="">Seleccione una opción</option>
                                         {
-                                            inventario.map(tipo=>(
-                                                <option value={tipo.inventarioid} key={tipo.inventarioid} className=" hover:bg-sky-700">{tipo.nombre}</option>
+                                            newSub.map(tipo=>(
+                                                <option value={tipo.subproductoid} key={tipo.subproductoid} className=" hover:bg-sky-700">{tipo.nombre}</option>
                                             ))
                                         }
                                     </select>
                                             
                                 </div>
-                                <div className="ml-5 max-w-xs">
-        
-                                    <label className="block text-sm text-white">
-                                    Cantidad</label>
-                            
-                                    <input 
-                                    className="w-full px-5 py-1 text-gray-700 bg-gray-300 rounded focus:outline-none focus:bg-white" 
-                                    type="text" 
-                                    name='detalle.cantidad'
-                                    placeholder="Cantidad de producto" 
-                                    value={values.detalle.cantidad || ''}
-                                    onChange={handleChange}
-                                    required 
-                                    />
-        
-                                    </div>
+                                
                                 <div className='justify-end flex ml-16 mt-5 -mr-2'>
                                             <button 
                                             type='button'
                                             onClick={()=>{
                                                 let exist = newInventario.length == 0 ? false : existe.includes(values.detalle.inventarioid)                                      
-                                                if(values.detalle.inventarioid && values.detalle.cantidad && values.precio && values.descripcion && values.nombre && values.tipounidadmedidaid){
+                                                //if(values.detalle.subproductoid && values.precio && values.descripcion && values.nombre && values.tipounidadmedidaid && values.tipoproductoid && values.categoriaid && image){
                                                     if(exist == false){
                                                         setErrores("")
-                                                        agregarProducto(values.detalle,values)
+                                                        agregarProducto(values.detalle)
                                                     }
                                                     else{
                                                         setErrores("Ya existe el mismo producto")
                                                     }
-                                                }
+                                                /* }
                                                 else{
                                                     setErrores("Ingrese todos los datos")
-                                                }
+                                                } */
                                             }}  
                                             className="px-4 py-1 text-white font-light tracking-wider bg-green-600 hover:bg-green-500 rounded text-lg">+</button>
                                 </div>
@@ -289,40 +390,38 @@ function Productos() {
                                                     <thead className="text-xs font-semibold uppercase text-gray-400 bg-gray-700">
                                                         <tr>
                                                             <th className="p-2 whitespace-nowrap">
-                                                                <div className="font-semibold text-left">Producto</div>
+                                                                <div className="font-semibold text-left">SubProducto</div>
                                                             </th>
                                                             <th className="p-2 whitespace-nowrap">
-                                                                <div className="font-semibold text-left">Descripcion</div>
-                                                            </th>
+                                                                <div className="font-semibold text-left">Precio Agregado</div>
+                                                            </th> 
                                                             <th className="p-2 whitespace-nowrap">
-                                                                <div className="font-semibold text-left">Cantidad</div>
-                                                            </th>
-                                                            <th className="p-2 whitespace-nowrap">
-                                                                <div className="font-semibold text-left">Acciones</div>
-                                                            </th>
+                                                                <div className="font-semibold text-left">Tipo Sub Producto</div>
+                                                            </th>                                                         
                                                         </tr>
                                                     </thead>
                                                     <tbody className="text-sm divide-y-2 divide-gray-100">
                                                         {
                                                             newInventario.map((invent)=>(
-                                                            <tr key={invent.inventarioid}>
+                                                            <tr key={invent.subproductoid}>
                                                             
                                                                 <td className="p-2 whitespace-nowrap">
                                                                     <div className="text-left">{invent.nombre}</div>
                                                                 </td>
                                                                 <td className="p-2 whitespace-nowrap">
-                                                                    <div className="text-left">{invent.desc}</div>
+                                                                    <div className="text-left">{invent.precio}</div>
                                                                 </td>
                                                                 <td className="p-2 whitespace-nowrap">
-                                                                    <div className="text-left">{invent.cantidad}</div>
+                                                                    <div className="text-left">{invent.tiposub}</div>
                                                                 </td>
+                                                                
                                                                 <td className="p-2 whitespace-nowrap">
                                                                    <button
                                                                    type='button'
                                                                    className='px-4 py-1 text-white font-light tracking-wider bg-red-700 hover:bg-red-600 rounded text-lg'
                                                                    onClick={()=>{
-                                                                    setNewInventario(newInventario.filter(newInventario => newInventario.inventarioid != invent.inventarioid))
-                                                                    setExiste(existe.filter(existe=> existe != invent.inventarioid))
+                                                                    setNewInventario(newInventario.filter(newInventario => newInventario.subproductoid != invent.subproductoid))
+                                                                    setExiste(existe.filter(existe=> existe != invent.subproductoid))
                                                                    }}
                                                                    >
                                                                     -

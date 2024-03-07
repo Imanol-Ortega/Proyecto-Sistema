@@ -1,9 +1,9 @@
 import { pool } from "../db.js";
 
 //funcion para obtener todos los datos de personas
-export const getProducto = async(req,res)=>{
+export const getProductos = async(req,res)=>{
     try {
-        const result = await pool.query('SELECT * FROM productos');
+        const result = await pool.query('SELECT * FROM productos WHERE activo=TRUE');
         res.json(result.rows);
     } catch (error) {
         return res.status(500).json({message:error.message});
@@ -11,11 +11,11 @@ export const getProducto = async(req,res)=>{
 };
 
 //funcion para obtener un dato de la tabla personas en especifico
-export const getProductos = async(req,res)=>{
+export const getProducto = async(req,res)=>{
     try {
-        const result = await pool.query('SELECT * FROM productos WHERE productoid = $1',[parseInt(req.params.id)]);
+        const result = await pool.query('SELECT * FROM productos WHERE productoid = $1 AND activo = TRUE',[parseInt(req.params.id)]);
         if (result.rowCount == 0){
-            return res.status(404).json({message: "persona no encontrada"})
+            return res.status(404).json({message: "producto no encontrado"})
         }
         res.json(result.rows);
     } catch (error) {
@@ -27,14 +27,12 @@ export const getProductos = async(req,res)=>{
 export const postProducto = async(req,res)=>{
     try {
         const resp= req.body;
-        const result = await pool.query('INSERT INTO productos (nombre,descripcion,precio,preciomanoobra,margenganancia,tipoproductoid) VALUES ($1,$2,$3,$4,$5,$6) RETURNING productoid',
-                                        [resp.nombre,resp.descripcion,resp.precio,resp.manoobra,resp.margen,resp.tipoproductoid])
+        const result = await pool.query('INSERT INTO productos (nombre,descripcion,precio,,tipounidadmedidaid,tipoproductoid,categoriaid) VALUES ($1,$2,$3,$4,$5,$6) RETURNING productoid',
+                                        [resp.nombre,resp.descripcion,resp.precio,resp.tipounidadmedidaid,resp.tipoproductoid,resp.categoriaid])
 
         for(let i=0;i<resp.detalle.length;i++){
-            const response = await pool.query('INSERT INTO invent_produc (productoid,inventarioid,cantidad) VALUES($1,$2,$3)',
-                                            [result.rows[0].productoid,resp.detalle[i].inventarioid,resp.detalle[i].cantidad]);
-            const response2 = await pool.query('UPDATE inventario SET cantidad = cantidad - $1 WHERE inventarioid = $2',
-                                                [resp.detalle[i].cantidad,resp.detalle[i].inventarioid])
+            const response = await pool.query('INSERT INTO productosubproducto (productoid,subproductoid) VALUES($1,$2)',
+                                            [result.rows[0].productoid,resp.detalle[i].subproductoid]);
         }
         res.json(result.rows);
     } catch (error) {
@@ -45,9 +43,14 @@ export const postProducto = async(req,res)=>{
 // funcion para actualizar la tabla personas
 export const updProducto = async(req,res)=>{
     try {
-        const {nombres,apellidos,telefono,direccion,nrodocumento,email,td,tp} = req.body;
-        const result = await pool.query('UPDATE personas SET nombres = $1, apellidos = $2, telefono = $3, direccion = $4, nrodocumento = $5, email = $6, tipodocumentoid = $7, tipopersonaid = $8 WHERE personasid = $9 ',
-                                        [nombres,apellidos,telefono,direccion,nrodocumento,email,td,tp,req.params.id]);
+        const resp = req.body;
+        const result = await pool.query('UPDATE productos SET nombre = $1, descripcion = $2, precio = $3, tipounidadmedidaid = $4, tipoproductoid = $5, categoriaid = $6 WHERE productoid = $7 ',
+                                        [resp.nombre,resp.descripcion,resp.precio,resp.tipounidadmedidaid,resp.tipoproductoid,resp.categoriaid,req.params.id]);
+        const dlt = await pool.query('DELETE FROM productosubproducto WHERE productoid = $1',[req.params.id])
+        for(let i=0;i<resp.detalle.length;i++){
+            const response = await pool.query('INSERT INTO productosubproducto (productoid,subproductoid) VALUES($1,$2)',
+                                            [req.params.id,resp.detalle[i].subproductoid]);
+        }
         res.json(result)
     } catch (error) {
         return res.status(500).json({message:error.message})
@@ -57,9 +60,18 @@ export const updProducto = async(req,res)=>{
 // funcion para eliminar de la tabla personas
 export const dltProducto = async(req,res)=>{
     try {
-        const result = await pool.query('DELETE FROM personas WHERE personasid = $1',[req.params.id]);
+        const result = await pool.query('UPDATE productos SET activo = false WHERE productoid = $1',[req.params.id]);
         res.json(result)
     } catch (error) {
         return res.status(500).json({message:error.message})
     }
 };
+
+export const getProductoSubproducto = async(req,res)=>{
+    try {
+        const result = await pool.query('SELECT * FROM productosubproducto WHERE productoid = $1',[req.params.id])
+        res.json(result.rows)
+    } catch (error) {
+        return res.status(500).json({message:error.message})
+    }
+}

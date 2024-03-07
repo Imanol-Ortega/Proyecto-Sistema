@@ -5,6 +5,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { getInventariosRequest } from '../api/inventario.api';
 import { getRecetaRequest, getSubProductoRequest, postSubProductoRequest, updSubProductoRequest } from '../api/subproducto.api';
+import { getTipoSubproductosRequest } from '../api/tiposubproducto.api';
 
 
 
@@ -12,6 +13,8 @@ function Subproductos() {
     const [subproducto,setSubProducto] = useState({
         nombre:"",
         descripcion:"",
+        tiposubproductoid:"",
+        precio:0,
         detalle:{
             inventarioid:"",
             cantidad:""
@@ -76,6 +79,8 @@ function Subproductos() {
             setSubProducto({
                 nombre:rp.data[0].nombre,
                 descripcion:rp.data[0].descripcion,
+                tiposubproductoid:rp.data[0].tiposubproductoid,
+                precio:rp.data[0].precio,
                 detalle:{
                     inventarioid:"",
                     cantidad:""
@@ -86,12 +91,21 @@ function Subproductos() {
         }
     }
 
+    const cargarTipoSubProductos = async()=>{
+        try {
+            const rp = await getTipoSubproductosRequest();
+            setTipoSubProducto(rp.data)
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
     const navigate = useNavigate();
     const params = useParams();
 
     useEffect(()=>{
-        setNewInventario([])
         cargarInventario(); 
+        cargarTipoSubProductos();
     },[])
     useEffect(()=>{
         if(params.id){
@@ -101,6 +115,7 @@ function Subproductos() {
     useEffect(()=>{
         if(receta.length>0 && !inventcargado){                  
             receta.map((receta) => {
+                setExiste((prev)=>[...prev,receta.inventarioid])
                 const nombre = filtrarNombres(receta.inventarioid);
                 const desc = filtrarDescripcion(receta.inventarioid);
                 const tp = filtrarUnidad(receta.inventarioid);
@@ -124,15 +139,20 @@ function Subproductos() {
           initialValues={subproducto}
           enableReinitialize = {true}
           onSubmit={async(values,actions)=>{
-            actions.setSubmitting(true)
-           if(params.id){
-                await updSubProductoRequest(params.id,{nombre:values.nombre, descripcion:values.descripcion, detalle:newInventario})
-           }else{
-                await postSubProductoRequest({nombre:values.nombre, descripcion:values.descripcion, detalle:newInventario});
-           }
+            if(newInventario.length>0){
+                setErrores('')
+                actions.setSubmitting(true)
+                if(params.id){
+                        await updSubProductoRequest(params.id,{nombre:values.nombre, descripcion:values.descripcion,precio:values.precio,tiposubproductoid:values.tiposubproductoid, detalle:newInventario})
+                }else{
+                        await postSubProductoRequest({nombre:values.nombre, descripcion:values.descripcion,precio:values.precio,tiposubproductoid:values.tiposubproductoid, detalle:newInventario});
+                }
 
-            actions.resetForm();
-            navigate('/subproducto/vista')
+                actions.resetForm();
+                navigate('/subproducto/vista')
+            }else{
+                setErrores("Debe de ingresar los datos de la receta")
+            }
                          
           }}
         >
@@ -192,12 +212,28 @@ function Subproductos() {
                                     required 
                                     />
     
+                                </div>
+                                <div className="mt-0 mr-32">
+    
+                                    <label className="block text-sm text-white">
+                                    Precio Agregado</label>
+                            
+                                    <input 
+                                    className="w-full px-5 py-1 text-gray-700 bg-gray-300 rounded focus:outline-none focus:bg-white" 
+                                    type="number" 
+                                    name='precio'
+                                    placeholder="Escriba el precio agregado" 
+                                    value={values.precio || 0}
+                                    onChange={handleChange}
+                                    required 
+                                    />
+    
                                 </div> 
                                 <div className='mt-1'>
                                     <label className='block text-sm text-white'>
-                                        Unidad de Medida
+                                        Tipo Sub Producto
                                     </label>
-                                    <select name="tipounidadmedidaid" value={values.tipounidadmedidaid} className="px-5 p-2 text-gray-700 bg-gray-300 rounded focus:outline-none focus:bg-white" onChange={handleChange} required>
+                                    <select name="tiposubproductoid" value={values.tiposubproductoid} className="px-5 p-2 text-gray-700 bg-gray-300 rounded focus:outline-none focus:bg-white" onChange={handleChange} required>
                                         <option value="">Seleccione una Opcion</option>
                                         {
                                             tiposubproducto.map(tipo=>
@@ -343,7 +379,7 @@ function Subproductos() {
                         {errores.length>0 ?<div className='flex justify-center align-middle font-mono text-justify text-red-500 text-base mt-5'> {errores} </div>: null}
                         <div className='max-w-2xl flex justify-start align-middle mt-5 bg-slate-700 flex-col px-5 py-5 ml-14 rounded-md'>                                    
                             <div className="ml-6 mt-4 items-center flex justify-start">
-            
+                                
                                 <button 
                                 className="px-4 py-1 text-white font-light tracking-wider bg-gray-900 hover:bg-gray-800 rounded"
                                 type="submit"

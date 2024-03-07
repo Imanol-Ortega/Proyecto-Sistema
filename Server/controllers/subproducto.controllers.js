@@ -13,7 +13,7 @@ export const getSubProducto = async(req,res)=>{
 }
 export const getSubProductos = async(req,res)=>{
     try {
-        const result = await pool.query('SELECT * FROM subproductos WHERE activo = TRUE');
+        const result = await pool.query('SELECT s.subproductoid, s.nombre,s.descripcion,s.precio,t.tiposubproductoid as tiposubproductoid,t.descripcion as tiposub FROM subproductos as s INNER JOIN tiposubproducto as t ON s.tiposubproductoid = t.tiposubproductoid WHERE activo = TRUE');
         res.json(result.rows)
     } catch (error) {
         return res.status(500).json({message:error.message})
@@ -22,7 +22,7 @@ export const getSubProductos = async(req,res)=>{
 export const postSubProducto = async(req,res)=>{
     try {
         const resp = req.body;
-        const result = await pool.query('INSERT INTO subproductos (nombre,descripcion) VALUES ($1,$2) RETURNING subproductoid',[resp.nombre,resp.descripcion]);
+        const result = await pool.query('INSERT INTO subproductos (nombre,descripcion,precio,tiposubproductoid) VALUES ($1,$2,$3,$4) RETURNING subproductoid',[resp.nombre,resp.descripcion,resp.precio,resp.tiposubproductoid]);
         for(let i=0;i<resp.detalle.length;i++){
             const response = await pool.query('INSERT INTO recetasubproductos (inventarioid,subproductoid,cantidad) VALUES($1,$2,$3)',
                                     [resp.detalle[i].inventarioid,result.rows[0].subproductoid,resp.detalle[i].cantidad]);
@@ -37,7 +37,7 @@ export const updSubProducto = async(req,res)=>{
 
         const resp = req.body;
         
-        const result = await pool.query('UPDATE subproductos SET descripcion = $1,nombre = $2 WHERE subproductoid = $3',[resp.descripcion,resp.nombre,req.params.id]);
+        const result = await pool.query('UPDATE subproductos SET descripcion = $1,nombre = $2,precio = $3, tiposubproductoid = $4 WHERE subproductoid = $5',[resp.descripcion,resp.nombre,resp.precio,resp.tiposubproductoid,req.params.id]);
 
         const dltreceta = await pool.query('DELETE FROM recetasubproductos WHERE subproductoid = $1',[req.params.id])
 

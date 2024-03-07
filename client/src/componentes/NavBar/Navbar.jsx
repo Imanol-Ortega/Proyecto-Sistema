@@ -31,6 +31,14 @@ export default function Navbar(){
                             Clientes
                         </Link>
                     </li>
+                    <li>
+                        <Link 
+                        to="/productos/vista" 
+                        className="focus:outline-none focus:ring focus:ring-red-600 bg-slate-200 text-gray-700 rounded px-2 py-1" 
+                        >
+                            Productos
+                        </Link>
+                    </li>
                     
                     <li>
                          <Link 
@@ -107,6 +115,15 @@ export default function Navbar(){
                             TipoProducto
                         </Link>
                     </li>
+                    <li>
+                        <Link 
+                        to="/tiposubproducto/vista" 
+                        className="focus:outline-none focus:ring focus:ring-red-600 bg-slate-200 text-gray-700 rounded px-2 py-1" 
+                        >
+                            TipoSubProducto
+                        </Link>
+                    </li>
+
 
                     <li>
                         <Link 
@@ -118,7 +135,7 @@ export default function Navbar(){
                     </li>
                   
                     <li>
-                       {user.username && <Link to="/perfil" className="focus:outline-none focus:ring focus:ring-red-600 bg-slate-200 text-gray-700 rounded px-2 py-1">Perfil</Link> }
+                       {user.username && <Link to="/perfil" className="focus:outline-none focus:ring focus:ring-red-600 bg-slate-200 text-gray-700 rounded px-2 py-1">{user.username}</Link> }
                     </li>
 
                     <li>

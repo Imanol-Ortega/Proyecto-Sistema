@@ -15,3 +15,7 @@ export const postProductoRequest = async(value)=>{
 export const updProductoRequest = async(id,value)=>{
     return await axios.put(`http://localhost:4000/productos/${id}`,value);
 };
+
+export const getProductoSubproductoRequest = async(id)=>{
+    return await axios.get(`http://localhost:4000/productosubproducto/${id}`);
+}

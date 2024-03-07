@@ -6,7 +6,6 @@ import { Route,Routes } from "react-router-dom"
 import Login from "./componentes/Sesion/Login"
 import Register from "./componentes/Sesion/Register"
 import Home from "./componentes/Home/Home"
-import Profile from "./componentes/Perfil/Profile"
 import Authentication from "./routes/Authentication"
 import NotFound from "./componentes/NotFound/NotFound"
 import Clientes from "./formularios/Clientes"
@@ -32,6 +31,9 @@ import InventarioView from "./vistas/InventarioView"
 import FacturaCompraView from "./vistas/FacturaCompraView"
 import Subproductos from "./formularios/Subproductos"
 import SubProductoView from "./vistas/SubProductoView"
+import TipoSubProductoView from "./vistas/TipoSubProductoView"
+import TipoSubProducto from "./formularios/TipoSubProducto"
+import ProductosView from "./vistas/ProductosView"
 
 function App() {
 
@@ -53,7 +55,6 @@ function App() {
             <Route path="/login" element={<Login/>}></Route>
             <Route path="/register" element={<Register/>}></Route>
 
-            <Route path="/perfil" element={<Authentication><Profile/></Authentication>}/>
 
             <Route path="/perfil/nuevo/:id2" element={<Authentication> <Clientes nombre={"Cliente"}/> </Authentication> } />
 
@@ -82,9 +83,10 @@ function App() {
             <Route path="/facturacompra/vista" element={<FacturaCompraView/>} />
             <Route path="/facturacompra/nuevo" element={<FacturaCompra/>} />
 
-
+            <Route path="/productos/vista" element={<ProductosView />} />
             <Route path="/productos/nuevo" element={<Productos/>} />
             <Route path="/productos/edit/:id" element={<Productos/>} />
+
 
             <Route path="/subproducto/vista" element={< SubProductoView/>} />
             <Route path="/subproducto/nuevo" element={<Subproductos />} />
@@ -110,6 +112,9 @@ function App() {
             <Route path="/tipoproducto/nuevo" element={<TipoProducto/>} />
             <Route path="/tipoproducto/edit/:id" element={<TipoProducto/>} />
 
+            <Route path="/tiposubproducto/vista" element={<TipoSubProductoView />} />
+            <Route path="/tiposubproducto/nuevo" element={<TipoSubProducto />} />
+            <Route path="/tiposubproducto/edit/:id" element={<TipoSubProducto />} />
 
             <Route path="/categoria/vista" element={<CategoriaView/> } />
             <Route path="/categoria/nuevo" element={<Categorias/>} />

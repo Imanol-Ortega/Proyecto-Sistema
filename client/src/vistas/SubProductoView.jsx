@@ -2,8 +2,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import ReactPaginate from 'react-paginate';
-
-import React from 'react'
 import { dltSubProductoRequest, getSubProductosRequest } from "../api/subproducto.api";
 
 function SubProductoView() {
@@ -120,7 +118,17 @@ function SubProductoView() {
                                                             <div className="font-semibold text-left">
                                                                 Descripcion
                                                             </div>
-                                                        </th>                                                                                                             
+                                                        </th> 
+                                                        <th className="p-2 whitespace-nowrap">
+                                                            <div className="font-semibold text-left">
+                                                                Precio Agregado
+                                                            </div>
+                                                        </th> 
+                                                        <th className="p-2 whitespace-nowrap">
+                                                            <div className="font-semibold text-left">
+                                                                Tipo SubProducto
+                                                            </div>
+                                                        </th>                                                                                                              
                                                         <th className="p-2 whitespace-nowrap">
                                                             <div className="font-semibold text-left">
                                                                 Acciones
@@ -147,7 +155,17 @@ function SubProductoView() {
                                                                     <div className="text-left">
                                                                         {tipo.descripcion}
                                                                     </div>
-                                                                </td>                                                                                                                       
+                                                                </td>
+                                                                <td className="p-2 whitespace-nowrap">
+                                                                    <div className="text-left">
+                                                                        {tipo.precio}
+                                                                    </div>
+                                                                </td>
+                                                                <td className="p-2 whitespace-nowrap">
+                                                                    <div className="text-left">
+                                                                        {tipo.tiposub}
+                                                                    </div>
+                                                                </td>                                                                                                                         
                                                                 <td className="p-2 whitespace-nowrap">
                                                                     <div className="text-right">
                                                                     <Link to={`/subproducto/edit/${tipo.subproductoid}`} className='px-3 py-1 text-white font-light tracking-wider bg-blue-600 hover:bg-blue-500 rounded text-xs ml-2 mr-2'>Editar</Link>
@@ -155,7 +173,7 @@ function SubProductoView() {
                                                                         <button 
                                                                         className='px-3 py-1 text-white font-light tracking-wider bg-red-700 hover:bg-red-600 rounded text-xs -ml-1'
                                                                         onClick={()=>{
-                                                                            borrarSubproducto(tipo.compraid)
+                                                                            borrarSubproducto(tipo.subproductoid)
                                                                         }}
                                                                         >
                                                                             Eliminar
