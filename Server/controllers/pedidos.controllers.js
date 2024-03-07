@@ -11,7 +11,7 @@ export const getPedido = async(req,res)=>{
 
 export const getPedidos = async(req,res)=>{
     try {
-        const rp = await pool.query('SELECT * FROM pedidos');
+        const rp = await pool.query('SELECT p.pedidoid,pr.nombres as nombre,p.pedidofecha,p.total,p.fechaentrega,p.estado FROM pedidos as p INNER JOIN personas as pr ON p.personasid = pr.personasid');
         res.json(rp.rows);
     } catch (error) {
         return res.status(500).json({message:error.message});
@@ -45,10 +45,18 @@ export const dltPedidos = async(req,res)=>{
     }
 }
 
-export const getDetalle = async()=>{
+export const getDetalle = async(req,res)=>{
     try {
-        const resp = await pool.query('SELECT * detallepedido WHERE pedidoid = $1',[req.params.id]);
+        const resp = await pool.query('SELECT * FROM detallepedido WHERE pedidoid = $1',[req.params.id]);
         res.json(resp.rows)
+    } catch (error) {
+        return res.status(500).json({message:error.message});
+    }
+}
+
+export const finalizar = async(req,res)=>{
+    try {
+        const rp = await pool.query('UPDATE pedidos SET estado = false WHERE pedidoid = $1',[req.params.id])
     } catch (error) {
         return res.status(500).json({message:error.message});
     }

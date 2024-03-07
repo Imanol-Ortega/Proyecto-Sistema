@@ -20,3 +20,7 @@ export const deletePedidosRequest = async(id)=>{
 export const getDetalleRequest = async(id)=>{
     return await axios.get(`http://localhost:4000/detallepedido/${id}`)
 }
+
+export const finalizarRequest = async(id)=>{
+    return await axios.get(`http://localhost:4000/finalizar/${id}`)
+}

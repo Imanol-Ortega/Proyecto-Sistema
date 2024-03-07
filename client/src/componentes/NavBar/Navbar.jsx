@@ -6,8 +6,8 @@ export default function Navbar(){
     const { user } = useAuth();
     return (
         
-        <div className="bg-neutral-950 rounded-md flex justify-end px-2 py-2 w-full border-2 border-red-400 fixed ">
-                <ul className="flex gap-x-1">
+        <div className="bg-neutral-950 rounded-md flex justify-end px-2 py-2 w-full border-2 border-red-400 fixed text-xs">
+                <ul className="flex gap-x-2">
                     
                     <li>
                         <Link 

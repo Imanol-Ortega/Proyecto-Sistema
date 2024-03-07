@@ -23,3 +23,7 @@ export const dltSubProductoRequest = async(id)=>{
 export const getRecetaRequest = async(id)=>{
     return await axios.get(`http://localhost:4000/subproductos/receta/${id}`)
 }
+
+export const reducirInventarioRequest = async(values)=>{
+    return await axios.post('http://localhost:4000/receta/inventario',values)
+}

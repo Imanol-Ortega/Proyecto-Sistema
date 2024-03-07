@@ -180,7 +180,12 @@ function Pedidos() {
                                     <label className="block text-sm text-white">
                                     Producto</label>
                                     
-                                    <select name="detalle.productoid" value={values.detalle.productoid} className="px-5 p-2 text-gray-700 bg-gray-300 rounded focus:outline-none focus:bg-white" onChange={handleChange} >
+                                    <select 
+                                    name="detalle.productoid" 
+                                    value={values.detalle.productoid} 
+                                    className="px-5 p-2 text-gray-700 bg-gray-300 rounded focus:outline-none focus:bg-white" 
+                                    onChange={handleChange} 
+                                    >
                                     <option value="0">Seleccione una opción</option>
                                     {
                                         productos.map(inv=>

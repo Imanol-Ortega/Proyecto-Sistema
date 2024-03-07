@@ -37,6 +37,7 @@ import ProductosView from "./vistas/ProductosView"
 import OfertasView from "./vistas/OfertasView"
 import Ofertas from "./formularios/Ofertas"
 import Pedidos from "./formularios/Pedidos"
+import PedidosView from "./vistas/PedidosView"
 
 function App() {
 
@@ -94,7 +95,7 @@ function App() {
             <Route path="/ofertas/nuevo" element={< Ofertas/>} />
             <Route path="/ofertas/edit/:id" element={< Ofertas/>} />
 
-            
+            <Route path="/pedidos/vista" element={< PedidosView/>} />
             <Route path="/pedidos/nuevo" element={< Pedidos/>} />
 
 

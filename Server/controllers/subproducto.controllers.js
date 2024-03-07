@@ -62,8 +62,18 @@ export const dltSubProducto = async(req,res)=>{
 
 export const getRecetaSubProducto = async(req,res)=>{
     try {
-        const result = await pool.query('SELECT * FROM recetasubproductos WHERE subproductoid = $1',[req.params.id]);
+        const result = await pool.query('SELECT inventarioid,cantidad FROM recetasubproductos WHERE subproductoid = $1',[req.params.id]);
         res.json(result.rows)
+    } catch (error) {
+        return res.status(500).json({message:error.message})
+    }
+}
+
+export const reducirInventario = async(req,res)=>{
+    try {
+        const rp = req.body
+        const result = await pool.query('UPDATE inventario SET cantidad = cantidad - $1 WHERE inventarioid = $2',[rp.cantidad,rp.inventarioid]);
+        res.json(result);
     } catch (error) {
         return res.status(500).json({message:error.message})
     }
