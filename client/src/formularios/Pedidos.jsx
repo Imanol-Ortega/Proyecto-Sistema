@@ -2,58 +2,62 @@
 import { Link, useNavigate,useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { Form, Formik,FieldArray } from 'formik'
-import { getProveedoresRequest } from '../api/proveedor.api';
-import { getInventariosRequest } from '../api/inventario.api';
+import { postPedidosRequest } from '../api/pedido.api';
+import { getPersonasRequest } from '../api/personas.api';
+import { getProductosRequest } from '../api/productos.api';
 
-import React from 'react';
-import { postFacturaCompraRequest } from '../api/facturacompra.api';
 
-function FacturaCompra() {
-    const [factura,setFactura] = useState({
-        timbrado:"",
-        total:0,
-        proveedorid:0,
+function Pedidos() {
+
+    const [pedidos,setPedidos] = useState({
+        personasid:"",
+        total:"",
+        fecha:"",
         detalle:{
-            inventarioid:"",
-            cantidad:"",
-            subtotal:""
+            productoid:"",
+            subtotal:0,
+            cantidad:0
         }
     })
     const [existe,setExiste] = useState([]);
-    const [inventario,setInventario] = useState([]);
-    const [proveedor,setProveedor] = useState([]);
-    const [newInventario,setNewInventario] = useState([]);
+    const [productos,setProductos] = useState([]);
+    const [cliente,setCliente] = useState([]);
+    const [total,setTotal] = useState(0);
     const [errores, setErrores] = useState("");
-    const [total,setTotal]=useState(0)
+    const [newProducto,setNewProducto] = useState([]);
 
-    const cargarProveedor = async()=>{
+
+    const cargarCliente = async()=>{
         try {
-            const resp = await getProveedoresRequest();
-            setProveedor(resp.data)
+            const rp = await getPersonasRequest(2);
+            
+            setCliente(rp.data)
         } catch (error) {
             console.error(error)
         }
     }
-    const cargarInventario = async()=>{
+
+    const cargarProductos = async()=>{
         try {
-            const resp = await getInventariosRequest();
-            setInventario(resp.data);
+            const rp = await getProductosRequest();
+            setProductos(rp.data)
         } catch (error) {
             console.error(error)
         }
     }
 
     const agregarProducto = (values)=>{
-        setExiste([...existe,values.inventarioid])
-        const nombre = filtrarNombres(values.inventarioid)
-        
-        setNewInventario([...newInventario,{inventarioid:values.inventarioid,nombre:nombre,cantidad:values.cantidad,subtotal:values.subtotal}])
-        setTotal(parseInt(total) + parseInt (values.subtotal))
+        setExiste([...existe,values.productoid])
+        const nombre = filtrarNombres(values.productoid)
+        const prod = productos.filter((p)=>p.productoid == values.productoid)
+
+        setNewProducto([...newProducto,{productoid:values.productoid,nombre:nombre,cantidad:values.cantidad,subtotal:prod[0].precio,tipomedida:prod[0].tipomedida}])
+        setTotal(parseInt(total) + parseInt(prod[0].precio * values.cantidad))
     }
 
     const filtrarNombres = (id)=>{
-        const result = inventario.map((inv)=>{
-            if(inv.inventarioid==id){
+        const result = productos.map((inv)=>{
+            if(inv.productoid==id){
                 return inv.nombre
             }
         })
@@ -62,25 +66,23 @@ function FacturaCompra() {
     }
 
     useEffect(()=>{
-        cargarInventario();
-        cargarProveedor();
+        cargarCliente();
+        cargarProductos();
+
     },[])
 
     const navigate = useNavigate();
     const params = useParams();  
+
   return (
     <div>
         <Formik
-          initialValues={factura}
+          initialValues={pedidos}
           enableReinitialize = {true}
           onSubmit={async(values,actions)=>{
-              //actions.setSubmitting(true)
-              await postFacturaCompraRequest({timbrado:values.timbrado,total:total,proveedorid:values.proveedorid,detalle:newInventario})
-              
-              console.log({timbrado:values.timbrado,total:total,proveedorid:values.proveedorid,detalle:newInventario})
-              setFactura('')
+              await postPedidosRequest({personasid:values.personasid,total:total,fecha:values.fecha,detalle:newProducto})             
               actions.resetForm();
-              navigate('/facturacompra/vista');
+              //navigate('/pedidos/vista');
           }}
         >
           {({handleChange,handleSubmit,values,isSubmitting})=>(
@@ -88,80 +90,76 @@ function FacturaCompra() {
   
               <div className="container mx-auto flex flex-1 justify-center items-center">
   
-                  <div className="w-full max-w-4xl">
+                  <div className="w-full max-w-2xl">
   
                     <div className="leading-loose">
                      
                       <Form 
-                      className="max-w-4xl m-4 p-10 bg-white bg-opacity-25 rounded shadow-xl mt-20" 
+                      className="max-w-2xl m-4 p-10 bg-white bg-opacity-25 rounded shadow-xl mt-20" 
                       onSubmit={handleSubmit}
                       >
 
                           <p 
                           className="text-white text-center text-lg font-bold mb-10">
-                          Factura Compra
+                          Pedidos
                           </p>
-                          <div className='flex flex-wrap justify-between'>
+                          <div className='flex flex-wrap justify-around'>
                                 <div className="mt-0">
     
-                                <label className="block text-sm text-white">
-                                Timbrado</label>
-                        
-                                <input 
-                                className="w-full px-5 py-1 text-gray-900 bg-gray-300 rounded focus:outline-none focus:bg-white" 
-                                type="number" 
-                                name='timbrado'
-                                placeholder="Escriba el timbrado de la factura" 
-                                value={values.timbrado || ''}
-                                onChange={handleChange}
-                                required 
-                                />
-    
+                                    <label className="block text-sm text-white">
+                                    Cliente</label>
+                            
+                                    <select name="personasid" defaultValue={values.personasid} className="px-5 p-2 text-gray-700 bg-gray-300 rounded focus:outline-none focus:bg-white" onChange={handleChange}>
+                                        <option value="">Seleccione una opción</option>
+                                        {
+                                            cliente.map(tipo=>
+                                            <option value={tipo.personasid} key={tipo.personasid} className=" hover:bg-sky-700">{tipo.nombres}</option>
+                                            )
+                                        }
+                                    </select>
+        
                                 </div>
                            
                                 <div className="mt-0">
     
-                                <label className="block text-sm text-white">
-                                Total</label>
-                        
-                                <input 
-                                className="w-full px-5 py-1 text-gray-900 bg-gray-300 rounded focus:outline-none focus:bg-white" 
-                                type="text" 
-                                name='total'
-                                placeholder="Escriba el total de la compra" 
-                                value={values.total || total}
-                                onChange={handleChange}
-                                required 
-                                />
-    
+                                    <label className="block text-sm text-white">
+                                    Total</label>
+                            
+                                    <input 
+                                    className="w-full px-5 py-1 text-gray-900 bg-gray-300 rounded focus:outline-none focus:bg-white" 
+                                    type="number" 
+                                    name='total'
+                                    placeholder="Escriba el total de la compra" 
+                                    value={values.total || total}
+                                    onChange={handleChange}
+                                    required 
+                                    />
+        
                                 </div>
+                                <div className="mt-0">
+    
+                                    <label className="block text-sm text-white">
+                                    Fecha Entrega</label>
+                            
+                                    <input 
+                                    className="w-full px-5 py-1 text-gray-900 bg-gray-300 rounded focus:outline-none focus:bg-white" 
+                                    type="date" 
+                                    name='fecha'                                  
+                                    value={values.fecha || ''}
+                                    onChange={handleChange}
+                                    required 
+                                    />
+        
+                                </div>                           
 
-                                <div>
-
-                                <label className='block text-sm text-white'>
-                                Proveedor
-                                </label>
-                                
-                                
-                                <select name="proveedorid" defaultValue={values.proveedorid || 2} className="px-5 p-2 text-gray-700 bg-gray-300 rounded focus:outline-none focus:bg-white" onChange={handleChange}>
-                                <option value="">Seleccione una opción</option>
-                                {
-                                    proveedor.map(tipo=>
-                                    <option value={tipo.proveedorid} key={tipo.proveedorid} className=" hover:bg-sky-700">{tipo.nombre}</option>
-                                    )
-                                }
-                                </select>
-                                
                             </div>
-
-                          </div>
 
                           <div className=' w-full justify-end flex mt-5'>
                                     <button 
                                     type='button' 
                                     onClick={()=>{
-                                        let exist = newInventario.length == 0 ? false : existe.includes(values.detalle.inventarioid)     
-                                        if(values.detalle.inventarioid && values.detalle.cantidad && values.detalle.subtotal){
+                                        let exist = newProducto.length == 0 ? false : existe.includes(values.detalle.productoid)     
+                                        if(values.detalle.productoid && values.detalle.cantidad ){
                                             if(exist == false){
                                                 setErrores("")
                                                 agregarProducto(values.detalle)
@@ -182,11 +180,11 @@ function FacturaCompra() {
                                     <label className="block text-sm text-white">
                                     Producto</label>
                                     
-                                    <select name="detalle.inventarioid" id="detalle.inventarioid" defaultValue={values.detalle.inventarioid} className="px-5 p-2 text-gray-700 bg-gray-300 rounded focus:outline-none focus:bg-white" onChange={handleChange} >
+                                    <select name="detalle.productoid" value={values.detalle.productoid} className="px-5 p-2 text-gray-700 bg-gray-300 rounded focus:outline-none focus:bg-white" onChange={handleChange} >
                                     <option value="0">Seleccione una opción</option>
                                     {
-                                        inventario.map(inv=>
-                                            <option value={inv.inventarioid} key={inv.inventarioid} className=" hover:bg-sky-700">{inv.nombre}</option>  
+                                        productos.map(inv=>
+                                            <option value={inv.productoid} key={inv.productoid} className=" hover:bg-sky-700">{inv.nombre}</option>  
                                         )
                                         
                                     }
@@ -201,27 +199,12 @@ function FacturaCompra() {
                                     className="w-full px-5 py-1 text-gray-900 bg-gray-300 rounded focus:outline-none focus:bg-white" 
                                     type="number" 
                                     name='detalle.cantidad'
-                                    placeholder="Escriba la cantidad de producto" 
+                                    placeholder="Escriba la cantidad a comprar" 
                                     value={values.detalle.cantidad || ''}
                                     onChange={handleChange}
                                     required 
                                     />
-                                </div>
-
-                                <div className="mt-0">
-        
-                                    <label className="block text-sm text-white">
-                                    SubTotal</label>
-                                    <input 
-                                    className=" px-5 py-1 text-gray-900 bg-gray-300 rounded focus:outline-none focus:bg-white" 
-                                    type="number" 
-                                    name='detalle.subtotal'
-                                    placeholder="Escriba el subtotal del producto" 
-                                    value={values.detalle.subtotal || ''}
-                                    onChange={handleChange}
-                                    required 
-                                    />
-        
+                                    
                                 </div>
                                 
                         </div>
@@ -251,15 +234,15 @@ function FacturaCompra() {
                                                 </thead>
                                                 <tbody className="text-sm divide-y divide-gray-100">
                                                     {
-                                                        newInventario.map((invent,index)=>(
-                                                        <tr key={index}>
+                                                        newProducto.map((invent,index)=>(
+                                                        <tr key={invent.productoid}>
                                                             <td className="p-2 whitespace-nowrap">
                                                                 <div className="flex items-center">
                                                                     <div className="font-medium text-gray-800">{invent.nombre}</div>
                                                                 </div>
                                                             </td>
                                                             <td className="p-2 whitespace-nowrap">
-                                                                <div className="text-left">{invent.cantidad}</div>
+                                                                <div className="text-left">{invent.cantidad}{' '}{invent.tipomedida}</div>
                                                             </td>
                                                             <td className="p-2 whitespace-nowrap">
                                                                 <div className="text-left font-medium text-green-500">{invent.subtotal} GS</div>
@@ -285,7 +268,7 @@ function FacturaCompra() {
                           >
                           Guardar
                           </button>
-                          <Link to='/facturacompra/vista'  className=" ml-2 px-4 py-1 text-white font-light tracking-wider bg-gray-900 hover:bg-gray-800 rounded">Cancelar</Link>
+                          <Link to='/pedidos/vista'  className=" ml-2 px-4 py-1 text-white font-light tracking-wider bg-gray-900 hover:bg-gray-800 rounded">Cancelar</Link>
 
                         </div>
                       </Form>
@@ -299,4 +282,4 @@ function FacturaCompra() {
   )
 }
 
-export default FacturaCompra
+export default Pedidos

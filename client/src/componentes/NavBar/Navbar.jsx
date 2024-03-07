@@ -7,11 +7,6 @@ export default function Navbar(){
     return (
         
         <div className="bg-neutral-950 rounded-md flex justify-end px-2 py-2 w-full border-2 border-red-400 fixed ">
-               {/*  <link
-                href="https://fonts.googleapis.com/css?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Two+Tone|Material+Icons+Round|Material+Icons+Sharp"
-                rel="stylesheet" />
-                
-                <i className="material-icons-outlined text-base">visibility</i> */}
                 <ul className="flex gap-x-1">
                     
                     <li>
@@ -20,6 +15,14 @@ export default function Navbar(){
                         className="focus:outline-none focus:ring focus:ring-red-600 bg-slate-200 text-gray-700 rounded px-2 py-1"
                         >
                             Inicio
+                        </Link>
+                    </li>
+                    <li>
+                        <Link 
+                        to="/pedidos/nuevo" 
+                        className="focus:outline-none focus:ring focus:ring-red-600 bg-slate-200 text-gray-700 rounded px-2 py-1"
+                        >
+                            Pedidos
                         </Link>
                     </li>
 
@@ -46,6 +49,14 @@ export default function Navbar(){
                          className="focus:outline-none focus:ring focus:ring-red-600 bg-slate-200 text-gray-700 rounded px-2 py-1" 
                          >
                             Empleado
+                        </Link>
+                    </li>
+                    <li>
+                         <Link 
+                         to="/ofertas/vista" 
+                         className="focus:outline-none focus:ring focus:ring-red-600 bg-slate-200 text-gray-700 rounded px-2 py-1" 
+                         >
+                            Ofertas
                         </Link>
                     </li>
 

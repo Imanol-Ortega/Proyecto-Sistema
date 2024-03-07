@@ -34,6 +34,9 @@ import SubProductoView from "./vistas/SubProductoView"
 import TipoSubProductoView from "./vistas/TipoSubProductoView"
 import TipoSubProducto from "./formularios/TipoSubProducto"
 import ProductosView from "./vistas/ProductosView"
+import OfertasView from "./vistas/OfertasView"
+import Ofertas from "./formularios/Ofertas"
+import Pedidos from "./formularios/Pedidos"
 
 function App() {
 
@@ -86,6 +89,13 @@ function App() {
             <Route path="/productos/vista" element={<ProductosView />} />
             <Route path="/productos/nuevo" element={<Productos/>} />
             <Route path="/productos/edit/:id" element={<Productos/>} />
+
+            <Route path="/ofertas/vista" element={<OfertasView />} />
+            <Route path="/ofertas/nuevo" element={< Ofertas/>} />
+            <Route path="/ofertas/edit/:id" element={< Ofertas/>} />
+
+            
+            <Route path="/pedidos/nuevo" element={< Pedidos/>} />
 
 
             <Route path="/subproducto/vista" element={< SubProductoView/>} />

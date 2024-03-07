@@ -156,7 +156,6 @@ function Productos() {
                 const nombre = filtrarNombres(prosub.subproductoid)
                 const tiposub = filtrarTipoSub(prosub.subproductoid)
                 const precio = filtrarPrecio(prosub.subproductoid)
-                console.log(prosub.subproductoid)
                 setNewInventario((prev) => [...prev,{
                     subproductoid:prosub.subproductoid,
                     nombre:nombre,
@@ -364,7 +363,7 @@ function Productos() {
                                             type='button'
                                             onClick={()=>{
                                                 let exist = newInventario.length == 0 ? false : existe.includes(values.detalle.inventarioid)                                      
-                                                //if(values.detalle.subproductoid && values.precio && values.descripcion && values.nombre && values.tipounidadmedidaid && values.tipoproductoid && values.categoriaid && image){
+                                                if(values.detalle.subproductoid && values.precio && values.descripcion && values.nombre && values.tipounidadmedidaid && values.tipoproductoid && values.categoriaid){
                                                     if(exist == false){
                                                         setErrores("")
                                                         agregarProducto(values.detalle)
@@ -372,10 +371,10 @@ function Productos() {
                                                     else{
                                                         setErrores("Ya existe el mismo producto")
                                                     }
-                                                /* }
+                                                }
                                                 else{
                                                     setErrores("Ingrese todos los datos")
-                                                } */
+                                                }
                                             }}  
                                             className="px-4 py-1 text-white font-light tracking-wider bg-green-600 hover:bg-green-500 rounded text-lg">+</button>
                                 </div>
