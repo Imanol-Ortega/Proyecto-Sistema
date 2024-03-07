@@ -1,6 +1,6 @@
 import { pool } from "../db.js";
 
-export const getTipoProducto = async(req,res)=>{
+export const getTipoProductos = async(req,res)=>{
     try {
         const result = await pool.query('SELECT * FROM tipoproductos');
         res.json(result.rows);
@@ -9,7 +9,7 @@ export const getTipoProducto = async(req,res)=>{
     }
 };
 
-export const getTipoProductos = async(req,res)=>{
+export const getTipoProducto = async(req,res)=>{
     try {
         const result = await pool.query('SELECT * FROM tipoproductos WHERE tipoproductoid = $1',[parseInt(req.params.id)]);
         if (result.rowCount == 0){
@@ -32,7 +32,7 @@ export const postTipoProductos = async(req,res)=>{
 
 export const updTipoProductos = async(req,res)=>{
     try {
-        const result = await pool.query('INSERT INTO tipoproductos (descripcion) VALUES ($1) WHERE tipoproductoid = $2',[req.body.descripcion,req.params.id]);
+        const result = await pool.query('UPDATE tipoproductos SET descripcion=$1 WHERE tipoproductoid = $2',[req.body.descripcion,req.params.id]);
         res.json(result.rows)
     } catch (error) {
         return res.status(500).json({message:error.message});

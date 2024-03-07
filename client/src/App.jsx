@@ -26,6 +26,12 @@ import ProveedoresView from "./vistas/ProveedoresView"
 import TipoPersonaView from "./vistas/TipoPersonaView"
 import TipoUnidadMedidaView from "./vistas/TipoUnidadMedidaView"
 import TipoDocumentoView from "./vistas/TipoDocumentoView"
+import TipoProductoView from "./vistas/TipoProductoView"
+import CategoriaView from "./vistas/CategoriaView"
+import InventarioView from "./vistas/InventarioView"
+import FacturaCompraView from "./vistas/FacturaCompraView"
+import Subproductos from "./formularios/Subproductos"
+import SubProductoView from "./vistas/SubProductoView"
 
 function App() {
 
@@ -68,16 +74,21 @@ function App() {
               <Route path="/proveedores/nuevo" element={<Proveedores/>} />
             </Route>
 
-
+            <Route path="/inventario/vista" element={< InventarioView/>} />
             <Route path="/inventario/nuevo" element={<Inventario/>} />
             <Route path="/inventario/edit/:id" element={<Inventario/>} />
 
-            <Route path="/facturacompra/nuevo" element={<FacturaCompra/>} />
 
+            <Route path="/facturacompra/vista" element={<FacturaCompraView/>} />
+            <Route path="/facturacompra/nuevo" element={<FacturaCompra/>} />
 
 
             <Route path="/productos/nuevo" element={<Productos/>} />
             <Route path="/productos/edit/:id" element={<Productos/>} />
+
+            <Route path="/subproducto/vista" element={< SubProductoView/>} />
+            <Route path="/subproducto/nuevo" element={<Subproductos />} />
+            <Route path="/subproducto/edit/:id" element={<Subproductos />} />
 
 
             <Route path="/tipodocumento/vista" element={<TipoDocumentoView />} />
@@ -95,12 +106,12 @@ function App() {
             <Route path="/tipounidadmedida/edit/:id" element={<TipoUnidadMedida/>} />
 
 
-            
+            <Route path="/tipoproducto/vista" element={<TipoProductoView/>} />
             <Route path="/tipoproducto/nuevo" element={<TipoProducto/>} />
             <Route path="/tipoproducto/edit/:id" element={<TipoProducto/>} />
 
 
-
+            <Route path="/categoria/vista" element={<CategoriaView/> } />
             <Route path="/categoria/nuevo" element={<Categorias/>} />
             <Route path="/categoria/edit/:id" element={<Categorias/>} />
 

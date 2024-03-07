@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { Form, Formik } from 'formik'
-import { useNavigate,useParams  } from 'react-router-dom'
+import { Link, useNavigate,useParams  } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { getTipoDocumentoRequest, postTipoDocumentosRequest, updTipoDocumentosRequest } from '../api/tipodocumento.api';
 
@@ -47,7 +47,7 @@ function TipoDocumento() {
             }
 
             actions.resetForm();
-            navigate('/')
+            navigate('/tipodocumento/vista')
               
             
           }}
@@ -88,12 +88,13 @@ function TipoDocumento() {
   
                             </div>
 
-                            <div className="mt-4 items-center flex justify-between">
+                            <div className="mt-4 items-center flex justify-start">
   
                               <button 
                               className="px-4 py-1 text-white font-light tracking-wider bg-gray-900 hover:bg-gray-800 rounded"
                               type="submit"
                               disabled = {isSubmitting}>{isSubmitting ? "Guardando...":"Guardar"}</button>
+                              <Link to='/tipodocumento/vista'  className=" ml-2 px-4 py-1 text-white font-light tracking-wider bg-gray-900 hover:bg-gray-800 rounded">Cancelar</Link>
   
                             </div>
                       </Form>

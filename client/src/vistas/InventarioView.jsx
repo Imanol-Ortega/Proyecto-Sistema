@@ -1,99 +1,75 @@
 /* eslint-disable no-unused-vars */
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { dltProveedoresRequest, getProveedoresRequest } from "../api/proveedor.api";
 import ReactPaginate from 'react-paginate';
+import { dltInventarioRequest, getInventariosRequest } from "../api/inventario.api";
 
 
-function ProveedoresView() {
+function InventarioView() {
 
-    const [proveedor,setProveedor] = useState([]);
-    const [filterProveedor,setFilterProveedor] = useState([]);
-    const [seleccion,setSeleccion] = useState(1)
+    const [inventario, setInventario] = useState([]);
+    const [filterInventario, setFilterInventario] = useState([]);
 
     const [currentItems,setCurrentItems] = useState([]);
     const [pageCount,setPageCount] = useState(0);
     const [itemOffset, setItemOffset] = useState(0);
     const itemsPerPage = 10;
 
-    const cargarProveedores = async()=>{
+    const cargarTipoPersonas = async()=>{
         try {
-            const rp = await getProveedoresRequest();
-            setProveedor(rp.data);
-            setFilterProveedor(rp.data);
+            const rp = await getInventariosRequest()
+            setInventario(rp.data)
+            setFilterInventario(rp.data)
         } catch (error) {
             console.error(error)
         }
     }
 
     const filtrado = (filter)=>{
-        if(filter){
-             let aux;
-             if(seleccion == 1){
-                 aux = filterProveedor.filter(filterProveedor => filterProveedor.nombre.toLowerCase().includes(filter.toLowerCase()))
-             }
-             else if(seleccion == 2){
-                 aux = filterProveedor.filter( filterProveedor=> filterProveedor.ruc.toString().includes(filter) )
-             }
-             setFilterProveedor(aux)
-   
-         }else{
-             setFilterProveedor(proveedor)
-         }
-     }
-     const borrarProveedor = async(id)=>{
+       if(filter){ 
+            setFilterInventario(filterInventario.filter(producto => producto.nombre.toLowerCase().includes(filter.toLowerCase() ) ) )
+        }else{
+            setFilterInventario(inventario)
+        }
+    }
+
+    const borrarInventario = async(id)=>{
         try {
-            const rp = await dltProveedoresRequest(id);
-            setProveedor(filterProveedor.filter(proveedores=>proveedores.proveedorid !=id));
-            setFilterProveedor(filterProveedor.filter(proveedores=>proveedores.proveedorid !=id));
+            const rp = await dltInventarioRequest(id)
+            setInventario(filterInventario.filter(filinventario => filinventario.inventarioid !=id))
+            setFilterInventario(filterInventario.filter(filinventario => filinventario.inventarioid !=id))
         } catch (error) {
             console.error(error)
         }
-     }
+    }
 
-     const handlePageClick = (e)=>{
-        const newOffset = (e.selected * itemsPerPage) % filterProveedor.length;
+    const handlePageClick = (e)=>{
+        const newOffset = (e.selected * itemsPerPage) % filterInventario.length;
         setItemOffset(newOffset);
      }
 
-    useEffect(()=>{
-        cargarProveedores();
-    },[])
+     useEffect(()=>{
+        cargarTipoPersonas()
+     },[])
 
     useEffect(()=>{
         const endOffset = itemOffset + itemsPerPage;
-        setCurrentItems(filterProveedor.slice(itemOffset,endOffset));
-        setPageCount(Math.ceil(filterProveedor.length / itemsPerPage));
-    },[itemOffset,itemsPerPage,filterProveedor])
+        setCurrentItems(filterInventario.slice(itemOffset,endOffset));
+        setPageCount(Math.ceil(filterInventario.length / itemsPerPage));
+    },[itemOffset,itemsPerPage,filterInventario])
 
   return (
     <div className="h-full font-sans bg-cover bg-zinc-950">
-            <div className="container mx-auto h-full flex justify-center items-center">
-                <div className="w-full max-w-5xl ">
+            <div className="container mx-auto h-full flex flex-1 justify-center items-center">
+                <div className="w-full max-w-2xl -mt-48">
                     <div className="py-8"> 
 
                         <div className="my-2 flex justify-center mr-4 ml-4 p-1 sm:flex-row flex-col">
-                            <p className="text-white text-center text-xl font-bold">Proveedores</p>
+                            <p className="text-white text-center text-xl font-bold">Inventario</p>
                         </div>
 
                         <div className="my-2 flex justify-end mr-4 ml-4 p-1 bg-gray-700 rounded sm:flex-row flex-col">
                             
-                            <div className="block relative mr-5">
-
-                                <label className='text-base text-white mr-3'>Filtrar por : </label>
-
-                                <select 
-                                name="opcion" 
-                                className="px-5 p-2 text-gray-700 bg-gray-300 rounded focus:outline-none focus:bg-white text-sm" 
-                                value={seleccion}
-                                onChange={(e)=>setSeleccion(e.currentTarget.value)}
-                                >
-                                    <option value="1">Nombre</option>
-                                    <option value="2">RUC</option>
-                                </select>    
-                                
-                            </div>
-
                             <div className="block relative">
 
                                 <span className="h-full absolute inset-y-0 left-0 flex items-center pl-2">
@@ -113,9 +89,8 @@ function ProveedoresView() {
                             </div>
 
                             <div className="block relative ml-20 mt-1">
-                                <Link to='/proveedores/nuevo' className='px-3 py-1 text-white font-light tracking-wider bg-green-700 hover:bg-green-600 rounded text-lg -ml-10 mr-2'>Agregar</Link>
+                                <Link to='/inventario/nuevo' className='px-3 py-1 text-white font-light tracking-wider bg-green-700 hover:bg-green-600 rounded text-lg -ml-10 mr-2'>Agregar</Link>                      
                             </div>
-
 
                         </div>
 
@@ -138,22 +113,17 @@ function ProveedoresView() {
                                                                     <div className="font-semibold text-left">
                                                                         Nombre
                                                                     </div>
-                                                                </th>
+                                                                </th>  
                                                                 <th className="p-2 whitespace-nowrap">
                                                                     <div className="font-semibold text-left">
-                                                                        RUC
+                                                                        Cantidad
                                                                     </div>
-                                                                </th>
+                                                                </th> 
                                                                 <th className="p-2 whitespace-nowrap">
                                                                     <div className="font-semibold text-left">
-                                                                        Telefono
+                                                                        Medida
                                                                     </div>
-                                                                </th>
-                                                                <th className="p-2 whitespace-nowrap">
-                                                                    <div className="font-semibold text-left">
-                                                                        E-mail
-                                                                    </div>
-                                                                </th>
+                                                                </th>                                                                
                                                                 <th className="p-2 whitespace-nowrap">
                                                                     <div className="font-semibold text-left">
                                                                         Acciones
@@ -164,44 +134,40 @@ function ProveedoresView() {
                                                 
                                                     <tbody className="text-sm divide-y-2 divide-gray-100">
                                                         {
-                                                                currentItems.map((proveedor,)=>(
-                                                                    <tr key={proveedor.proveedorid}>
+                                                                currentItems.map((tipo,)=>(
+                                                                    <tr key={tipo.inventarioid}>
                                                                         <td className="p-2 whitespace-nowrap">
                                                                             <div className="text-left">
-                                                                                {proveedor.proveedorid}
+                                                                                {tipo.inventarioid}
                                                                             </div>
                                                                         </td>
                                                                         <td className="p-2 whitespace-nowrap">
                                                                             <div className="text-left">
-                                                                                {proveedor.nombre}
+                                                                                {tipo.nombre}
                                                                             </div>
                                                                         </td>
                                                                         <td className="p-2 whitespace-nowrap">
                                                                             <div className="text-left">
-                                                                                {proveedor.ruc}
+                                                                                {tipo.cantidad}
                                                                             </div>
+                                                                            
                                                                         </td>
                                                                         <td className="p-2 whitespace-nowrap">
+                                                                            
                                                                             <div className="text-left">
-                                                                                {proveedor.telefono}
+                                                                                {tipo.tipounidad}
                                                                             </div>
                                                                         </td>
+                                                                       
                                                                         <td className="p-2 whitespace-nowrap">
-                                                                            <div className="text-left">
-                                                                                {proveedor.email}
-                                                                            </div>
-                                                                        </td>                                                                    
-                                                                        <td className="p-2 whitespace-nowrap">
-                                                                            <div className="items-end">
-                                                                                <Link to={`/proveedores/edit/${proveedor.proveedorid}`} className='px-3 py-1 text-white font-light tracking-wider bg-blue-600 hover:bg-blue-500 rounded text-xs ml-2 mr-2'>Editar</Link>
-                                                                                
+                                                                            <div className="text-right">                                                                              
+                                                                                <Link to={`/inventario/edit/${tipo.inventarioid}`} className='px-3 py-1 text-white font-light tracking-wider bg-blue-600 hover:bg-blue-500 rounded text-xs -ml-10 mr-2'>Editar</Link>                                                                                                                                                            
                                                                                 <button 
-                                                                                className='px-3 py-1 text-white font-light tracking-wider bg-red-700 hover:bg-red-600 rounded text-xs -mr-16'
-                                                                                onClick={()=>borrarProveedor(proveedor.proveedorid)}
+                                                                                className='px-3 py-1 text-white font-light tracking-wider bg-red-700 hover:bg-red-600 rounded text-xs -ml-1'
+                                                                                onClick={()=>borrarInventario(tipo.inventarioid)}
                                                                                 >
                                                                                     Eliminar
                                                                                 </button>
-
                                                                             </div>
                                                                         </td>
                                                                     </tr>
@@ -228,7 +194,7 @@ function ProveedoresView() {
                                                 </div>
                                                 <div className="w-full flex items-center justify-center">
                                                     {
-                                                        filterProveedor.length == 0 ?  
+                                                        filterInventario.length == 0 ?  
                                                         <div className='font-mono text-red-800 text-base mt-5 text-justify'> No hay nada por aquí... </div>
                                                         : null
                                                     }
@@ -246,4 +212,4 @@ function ProveedoresView() {
   )
 }
 
-export default ProveedoresView
+export default InventarioView

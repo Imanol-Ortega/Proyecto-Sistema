@@ -3,7 +3,7 @@ import { useNavigate,Link,useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { Form, Formik } from 'formik'
 import { getTipoUnidadMedidasRequest } from '../api/tipounidadmedida.api';
-import { postInventarioRequest, updInventarioRequest } from '../api/inventario.api';
+import { getInventarioRequest, postInventarioRequest, updInventarioRequest } from '../api/inventario.api';
 
 function Inventario() {
     const [inventario,setInventario] = useState({
@@ -27,10 +27,32 @@ function Inventario() {
         }
     }
 
+    const cargarInventario = async(id)=>{
+      try {
+        const rp  = await getInventarioRequest(id);
+        setInventario({
+          nombre:rp.data[0].nombre,
+          descripcion:rp.data[0].descripcion,
+          cantidad:rp.data[0].cantidad,
+          tipounidadmedidaid:rp.data[0].tipounidadmedidaid
+        })
+      } catch (error) {
+        console.error(error)
+      }
+    }
+
+
     useEffect(()=>{
         cargarTipoUnidad();
     },[])
-  
+
+    useEffect(()=>{
+      if(params.id){
+        cargarInventario(params.id)
+      }
+    },[params.id])
+
+
     return (
     
 
@@ -48,7 +70,7 @@ function Inventario() {
               }
               setInventario([])
               actions.resetForm();
-              navigate('/');
+              navigate('/inventario/vista');
           }}
         >
           {({handleChange,handleSubmit,values,isSubmitting})=>(
@@ -130,7 +152,7 @@ function Inventario() {
                               Tipo de Unidad de Medida
                             </label>
 
-                            <select name="tipounidadmedidaid" defaultValue={values.tipounidadmedidaid} className="w-full px-5 py-1 text-gray-900 bg-gray-300 rounded focus:outline-none focus:bg-white" onChange={handleChange} required>
+                            <select name="tipounidadmedidaid" value={values.tipounidadmedidaid} className="w-full px-5 py-1 text-gray-900 bg-gray-300 rounded focus:outline-none focus:bg-white" onChange={handleChange} required>
                                     <option value="">Seleccione una opción</option>
                               {
                                 tipounidad.map(tipo=>
@@ -143,7 +165,7 @@ function Inventario() {
 
                             {errores.length>0 ?<div className='flex justify-center align-middle font-mono text-justify text-red-500 text-base mt-5'> {errores} </div>: null}
 
-                        <div className="mt-4 items-center flex justify-between">
+                        <div className="mt-4 items-center flex justify-start">
   
                             <button 
                             className="px-4 py-1 text-white font-light tracking-wider bg-gray-900 hover:bg-gray-800 rounded"
@@ -151,6 +173,7 @@ function Inventario() {
                             disabled={isSubmitting}>
                             Guardar
                             </button>
+                            <Link to='/inventario/vista'  className=" ml-2 px-4 py-1 text-white font-light tracking-wider bg-gray-900 hover:bg-gray-800 rounded">Cancelar</Link>
   
                         </div>
                       </Form>

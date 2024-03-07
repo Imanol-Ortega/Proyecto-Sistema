@@ -34,7 +34,7 @@ export const postTipoUnidadMedida = async(req,res)=>{
 
 export const updTipoUnidadMedida  = async(req,res)=>{
     try {
-        const rb = rq.body;
+        const rb = req.body;
         const response = await pool.query('UPDATE tipounidadmedida SET descripcion = $1 WHERE tipounidadmedidaid = $2',
                                           [rb.descripcion,req.params.id]);
         res.json(response)

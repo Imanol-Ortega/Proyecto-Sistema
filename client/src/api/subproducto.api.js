@@ -17,5 +17,9 @@ export const updSubProductoRequest = async(id,value)=>{
 };
 
 export const dltSubProductoRequest = async(id)=>{
-    return await axios.delete(`http://localhost:4000/subproductos/${id}`);
+    return await axios.delete(`http://localhost:4000/subproductos/dlt/${id}`);
 };
+
+export const getRecetaRequest = async(id)=>{
+    return await axios.get(`http://localhost:4000/subproductos/receta/${id}`)
+}

@@ -55,7 +55,7 @@ export default function Navbar(){
 
                     <li>
                         <Link 
-                        to="/facturacompra/nuevo" 
+                        to="/facturacompra/vista" 
                         className="focus:outline-none focus:ring focus:ring-red-600 bg-slate-200 text-gray-700 rounded px-2 py-1" 
                         >
                             Compra
@@ -64,25 +64,17 @@ export default function Navbar(){
 
                     <li>
                         <Link 
-                        to="/inventario/nuevo" 
+                        to="/inventario/vista" 
                         className="focus:outline-none focus:ring focus:ring-red-600 bg-slate-200 text-gray-700 rounded px-2 py-1" 
                         >
                             Inventario
                         </Link>
                     </li>
+                  
 
                     <li>
                         <Link 
-                        to="/subproducto/nuevo" 
-                        className="focus:outline-none focus:ring focus:ring-red-600 bg-slate-200 text-gray-700 rounded px-2 py-1" 
-                        >
-                            SubProducto
-                        </Link>
-                    </li>
-
-                    <li>
-                        <Link 
-                        to="/tipodocumento/nuevo" 
+                        to="/tipodocumento/vista" 
                         className="focus:outline-none focus:ring focus:ring-red-600 bg-slate-200 text-gray-700 rounded px-2 py-1" 
                         >
                             TipoDocumento
@@ -91,7 +83,7 @@ export default function Navbar(){
 
                     <li>
                         <Link 
-                        to="/tipopersona/nuevo" 
+                        to="/tipopersona/vista" 
                         className="focus:outline-none focus:ring focus:ring-red-600 bg-slate-200 text-gray-700 rounded px-2 py-1" 
                         >
                             TipoPersona
@@ -100,7 +92,7 @@ export default function Navbar(){
 
                     <li>
                         <Link 
-                        to="/tipounidadmedida/nuevo" 
+                        to="/tipounidadmedida/vista" 
                         className="focus:outline-none focus:ring focus:ring-red-600 bg-slate-200 text-gray-700 rounded px-2 py-1" 
                         >
                             TipoUnidadMedida
@@ -109,7 +101,7 @@ export default function Navbar(){
 
                     <li>
                         <Link 
-                        to="/tipoproducto/nuevo" 
+                        to="/tipoproducto/vista" 
                         className="focus:outline-none focus:ring focus:ring-red-600 bg-slate-200 text-gray-700 rounded px-2 py-1" 
                         >
                             TipoProducto
@@ -118,22 +110,13 @@ export default function Navbar(){
 
                     <li>
                         <Link 
-                        to="/categoria/nuevo" 
+                        to="/categoria/vista" 
                         className="focus:outline-none focus:ring focus:ring-red-600 bg-slate-200 text-gray-700 rounded px-2 py-1" 
                         >
                             Categorias
                         </Link>
                     </li>
-
-                    <li>
-                        <Link 
-                        to="/productos/nuevo" 
-                        className="focus:outline-none focus:ring focus:ring-red-600 bg-slate-200 text-gray-700 rounded px-2 py-1" 
-                        >
-                            Productos
-                        </Link>
-                    </li>
-
+                  
                     <li>
                        {user.username && <Link to="/perfil" className="focus:outline-none focus:ring focus:ring-red-600 bg-slate-200 text-gray-700 rounded px-2 py-1">Perfil</Link> }
                     </li>

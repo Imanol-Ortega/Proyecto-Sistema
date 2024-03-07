@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { useNavigate,useParams } from 'react-router-dom'
+import { Link, useNavigate,useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { Form, Formik,FieldArray } from 'formik'
 import { getProveedoresRequest } from '../api/proveedor.api';
@@ -19,6 +19,7 @@ function FacturaCompra() {
             subtotal:""
         }
     })
+    const [existe,setExiste] = useState([]);
     const [inventario,setInventario] = useState([]);
     const [proveedor,setProveedor] = useState([]);
     const [newInventario,setNewInventario] = useState([]);
@@ -43,6 +44,7 @@ function FacturaCompra() {
     }
 
     const agregarProducto = (values)=>{
+        setExiste([...existe,values.inventarioid])
         const nombre = filtrarNombres(values.inventarioid)
         
         setNewInventario([...newInventario,{inventarioid:values.inventarioid,nombre:nombre,cantidad:values.cantidad,subtotal:values.subtotal}])
@@ -158,9 +160,14 @@ function FacturaCompra() {
                                     <button 
                                     type='button' 
                                     onClick={()=>{
+                                        let exist = newInventario.length == 0 ? false : existe.includes(values.detalle.inventarioid)     
                                         if(values.detalle.inventarioid && values.detalle.cantidad && values.detalle.subtotal){
-                                            setErrores("")
-                                            agregarProducto(values.detalle)
+                                            if(exist == false){
+                                                setErrores("")
+                                                agregarProducto(values.detalle)
+                                            }else{
+                                                setErrores("Ya existe la misma materia prima")
+                                            }
                                         }
                                         else{
                                             setErrores("Ingrese todos los datos")
@@ -269,7 +276,7 @@ function FacturaCompra() {
                             </div>
                         </section>
 
-                        <div className="mt-4 items-center flex justify-between">
+                        <div className="mt-4 items-center flex justify-start">
   
                           <button 
                           className="px-4 py-1 text-white font-light tracking-wider bg-gray-900 hover:bg-gray-800 rounded"
@@ -278,6 +285,7 @@ function FacturaCompra() {
                           >
                           Guardar
                           </button>
+                          <Link to='/facturacompra/vista'  className=" ml-2 px-4 py-1 text-white font-light tracking-wider bg-gray-900 hover:bg-gray-800 rounded">Cancelar</Link>
 
                         </div>
                       </Form>
