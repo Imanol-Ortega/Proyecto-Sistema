@@ -3,7 +3,7 @@ import { pool } from "../db.js";
 //funcion para obtener todos los datos de personas
 export const getProductos = async(req,res)=>{
     try {
-        const result = await pool.query('SELECT * FROM productos WHERE activo=TRUE');
+        const result = await pool.query('SELECT p.productoid,p.nombre,p.descripcion,p.precio,t.descripcion as tipomedida, tp.descripcion as tp, c.descripcion as cat FROM productos as p INNER JOIN tipounidadmedida as t ON t.tipounidadmedidaid = p.tipounidadmedidaid INNER JOIN tipoproductos as tp ON p.tipoproductoid = tp.tipoproductoid INNER JOIN categorias as c ON c.categoriaid = p.categoriaid WHERE activo=TRUE');
         res.json(result.rows);
     } catch (error) {
         return res.status(500).json({message:error.message});

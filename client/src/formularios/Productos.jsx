@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
 import { Form, Formik } from 'formik'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { getProductoRequest, getProductoSubproductoRequest, postProductoRequest, updProductoRequest } from '../api/productos.api';
 import { getTipoUnidadMedidasRequest } from '../api/tipounidadmedida.api';
@@ -442,13 +442,14 @@ function Productos() {
                         
                            {errores.length>0 ?<div className='flex justify-center align-middle font-mono text-justify text-red-500 text-base mt-5'> {errores} </div>: null}
 
-                            <div className="mt-4 items-center flex justify-center">
+                            <div className="ml-14 mt-4 items-center flex justify-start">
   
                               <button 
                               className="px-4 py-1 text-white font-light tracking-wider bg-gray-900 hover:bg-gray-800 rounded"
                               type="submit"
                               disabled={isSubmitting}>
                               Guardar</button>
+                              <Link to='/productos/vista'  className=" ml-2 px-4 py-1 text-white font-light tracking-wider bg-gray-900 hover:bg-gray-800 rounded">Cancelar</Link>
   
                             </div>
                       </Form>
