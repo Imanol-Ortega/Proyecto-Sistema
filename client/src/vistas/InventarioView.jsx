@@ -61,7 +61,7 @@ function InventarioView() {
   return (
     <div className="h-full font-sans bg-cover bg-zinc-950">
             <div className="container mx-auto h-full flex flex-1 justify-center items-center">
-                <div className="w-full max-w-2xl -mt-48">
+                <div className="w-full max-w-2xl mt-20">
                     <div className="py-8"> 
 
                         <div className="my-2 flex justify-center mr-4 ml-4 p-1 sm:flex-row flex-col">

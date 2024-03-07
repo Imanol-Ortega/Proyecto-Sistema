@@ -63,8 +63,8 @@ function App() {
             <Route path="/perfil/nuevo/:id2" element={<Authentication> <Clientes nombre={"Cliente"}/> </Authentication> } />
 
 
-            <Route path="/cliente/vista" element={<PersonasView nombre={'Clientes'}/>} />
-            <Route path="/cliente/nuevo" element={<Authentication> <Clientes nombre={"Cliente"}/> </Authentication> } />
+            <Route path="/cliente/vista" element={<PersonasView nombre={'Cliente'}/>} />
+            <Route path="/cliente/nuevo" element={ <Clientes nombre={"Cliente"}/> } />
             <Route path="/cliente/edit/:id" element={<Authentication><Clientes nombre={"Cliente"}/> </Authentication>} />
             
 
@@ -83,9 +83,10 @@ function App() {
             <Route path="/inventario/nuevo" element={<Inventario/>} />
             <Route path="/inventario/edit/:id" element={<Inventario/>} />
 
-
-            <Route path="/facturacompra/vista" element={<FacturaCompraView/>} />
-            <Route path="/facturacompra/nuevo" element={<FacturaCompra/>} />
+            <Route element={<Authorization permisos={[PERMISOS.ADMIN]} />}>
+                <Route path="/facturacompra/vista" element={<FacturaCompraView/>} />
+                <Route path="/facturacompra/nuevo" element={<FacturaCompra/>} />
+            </Route>
 
             <Route path="/productos/vista" element={<ProductosView />} />
             <Route path="/productos/nuevo" element={<Productos/>} />
@@ -123,9 +124,11 @@ function App() {
             <Route path="/tipoproducto/nuevo" element={<TipoProducto/>} />
             <Route path="/tipoproducto/edit/:id" element={<TipoProducto/>} />
 
+
             <Route path="/tiposubproducto/vista" element={<TipoSubProductoView />} />
             <Route path="/tiposubproducto/nuevo" element={<TipoSubProducto />} />
             <Route path="/tiposubproducto/edit/:id" element={<TipoSubProducto />} />
+
 
             <Route path="/categoria/vista" element={<CategoriaView/> } />
             <Route path="/categoria/nuevo" element={<Categorias/>} />

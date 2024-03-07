@@ -121,7 +121,7 @@ function PersonasView({nombre}) {
 
                             <div className="block relative ml-20 mt-1">
                                 {
-                                    nombre == 'Clientes' ?
+                                    nombre == 'Cliente' ?
                                     <Link to='/cliente/nuevo' className='px-3 py-1 text-white font-light tracking-wider bg-green-700 hover:bg-green-600 rounded text-lg -ml-10 mr-2'>Agregar</Link>
                                     :
                                     <Link to='/empleado/nuevo' className='px-3 py-1 text-white font-light tracking-wider bg-green-700 hover:bg-green-600 rounded text-lg -ml-10 mr-2'>Agregar</Link>
